@@ -2,7 +2,7 @@
 
 개발자의 프로젝트와 실험이 차곡차곡 쌓이는 작은 3D 작업실.
 
-**[작업실 들어가기](https://ersione.github.io/ersione-studio/)**
+**[작업실 들어가기](https://blog.ersione.com/ersione-studio/)**
 
 React + Three.js + Vite로 만든 정적 웹앱입니다. GitHub Pages에서 호스팅하며 서버나 API 키가 필요하지 않습니다.
 
@@ -13,7 +13,7 @@ React + Three.js + Vite로 만든 정적 웹앱입니다. GitHub Pages에서 호
 - 프로젝트 설명과 서비스·저장소 링크
 - 8장 카드 기억 게임, 밝은/어두운 배경 전환
 - 모바일 화면, 키보드로 열 수 있는 프로젝트 목록, 네이티브 모달
-- WebGL 미지원 시 프로젝트 목록과 게임은 계속 사용 가능
+- WebGL 미지원 시 정적 방 미리보기와 프로젝트 목록·게임 사용 가능
 
 ## 개발
 
@@ -36,6 +36,8 @@ npm run test:browser
 `src/room.js`는 방과 사물, `src/main.jsx`는 UI와 미니게임, `src/style.css`는 화면 스타일을 담당합니다. 새 게임은 게임기 모달을 확장해서 추가할 수 있습니다.
 
 ## 배포
+
+현재 계정의 GitHub Pages 사용자 지정 도메인인 `blog.ersione.com` 아래에 배포됩니다. `ersione.github.io/ersione-studio/`도 같은 주소로 리다이렉트됩니다.
 
 `main` push → GitHub Actions에서 빌드 → GitHub Pages 배포. 저장소 Settings → Pages의 Source는 GitHub Actions입니다. `vite.config.js`의 base는 `/ersione-studio/`로 설정되어 있습니다.
 

@@ -32,3 +32,23 @@ test('mobile layout stays within viewport',async({page})=>{
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
  await page.getByRole('button',{name:/Ersione Design System/}).click();await expect(page.getByRole('dialog')).toBeVisible();
 });
+
+test('WebGL fallback preserves project access',async({page})=>{
+ await page.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...args){if(type.includes('webgl'))return null;return original.call(this,type,...args);};});
+ await page.goto('');await expect(page.getByAltText('모니터, 도감, 팔레트와 게임기가 놓인 작은 작업실')).toBeVisible();
+ await page.getByRole('button',{name:/Company Lens/}).click();await expect(page.getByRole('dialog')).toBeVisible();
+});
+test('room objects can be selected directly',async({page})=>{
+ const THREE=await import('three');
+ await page.setViewportSize({width:1440,height:1000});await page.goto('');
+ await expect(page.locator('canvas')).toBeVisible();
+ const bounds=await page.locator('canvas').boundingBox();
+ const camera=new THREE.PerspectiveCamera(36,bounds.width/bounds.height,.1,100);
+ camera.position.set(9,8,11);camera.lookAt(0,1,0);camera.updateMatrixWorld();
+ for(const [point,title] of [[[-2.1,1.45,.24],'PogoAtlas'],[[0,1.75,-1.73],'Company Lens'],[[2.5,1.65,-1.38],'Ersione Design System'],[[1.7,.93,2.08],'작은 기억 게임']]){
+  const v=new THREE.Vector3(...point).project(camera);
+  await page.mouse.click(bounds.x+(v.x+1)*bounds.width/2,bounds.y+(1-v.y)*bounds.height/2);
+  await expect(page.getByRole('dialog').getByRole('heading',{name:title,exact:true})).toBeVisible();
+  await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).not.toBeVisible();
+ }
+});

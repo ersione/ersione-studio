@@ -119,12 +119,12 @@ export function createRoom(host, projects, onSelect, onHover, onError) {
   const move=e=>{const id=hit(e); renderer.domElement.style.cursor=id?'pointer':'grab'; onHover(id);};
   const start=e=>{down=[e.clientX,e.clientY];};
   const end=e=>{if(down&&Math.hypot(e.clientX-down[0],e.clientY-down[1])<6){const id=hit(e);if(id)onSelect(id);} down=null;};
-  renderer.domElement.addEventListener('pointermove',move); renderer.domElement.addEventListener('pointerdown',start); renderer.domElement.addEventListener('pointerup',end);
+  renderer.domElement.addEventListener('pointermove',move); renderer.domElement.addEventListener('pointerdown',start); renderer.domElement.addEventListener('click',end);
   avatarTexture.addEventListener?.('update',()=>{dirty=true;});
   const resize=()=>{dirty=true;const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();};
   const observer=new ResizeObserver(resize); observer.observe(host); resize();
   let frame; let visible=true;
   const draw=()=>{frame=requestAnimationFrame(draw);if(visible){const changed=controls.update();if(changed||dirty){renderer.render(scene,camera);dirty=false;}}}; draw();
   const visibility=()=>{visible=!document.hidden;};document.addEventListener('visibilitychange',visibility);
-  return {reset,dispose(){cancelAnimationFrame(frame);observer.disconnect();document.removeEventListener('visibilitychange',visibility);controls.dispose();renderer.domElement.removeEventListener('pointermove',move);renderer.domElement.removeEventListener('pointerdown',start);renderer.domElement.removeEventListener('pointerup',end);scene.traverse(o=>{o.geometry?.dispose(); if(o.material){for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();}});textures.forEach(t=>t.dispose());renderer.dispose();renderer.domElement.remove();}};
+  return {reset,dispose(){cancelAnimationFrame(frame);observer.disconnect();document.removeEventListener('visibilitychange',visibility);controls.dispose();renderer.domElement.removeEventListener('pointermove',move);renderer.domElement.removeEventListener('pointerdown',start);renderer.domElement.removeEventListener('click',end);scene.traverse(o=>{o.geometry?.dispose(); if(o.material){for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();}});textures.forEach(t=>t.dispose());renderer.dispose();renderer.domElement.remove();}};
 }
