@@ -2,7 +2,7 @@
 
 개발자의 프로젝트와 실험이 차곡차곡 쌓이는 작은 3D 작업실.
 
-**[작업실 들어가기](https://blog.ersione.com/ersione-studio/)**
+**[작업실 들어가기](https://studio.ersione.com/)**
 
 React + Three.js + Vite로 만든 정적 웹앱입니다. GitHub Pages에서 호스팅하며 서버나 API 키가 필요하지 않습니다.
 
@@ -27,7 +27,7 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-개발 주소는 `/ersione-studio/`입니다. `npm run preview`로 배포 결과를 확인합니다.
+개발 주소는 `/`입니다. `npm run preview`로 배포 결과를 확인합니다.
 
 ## 프로젝트 추가
 
@@ -37,9 +37,9 @@ npm run test:browser
 
 ## 배포
 
-현재 계정의 GitHub Pages 사용자 지정 도메인인 `blog.ersione.com` 아래에 배포됩니다. `ersione.github.io/ersione-studio/`도 같은 주소로 리다이렉트됩니다.
+공개 주소는 `https://studio.ersione.com/`입니다. 저장소의 Pages Custom domain에 `studio.ersione.com`을 설정하고, Cloudflare DNS의 DNS only CNAME `studio`를 `ersione.github.io`로 연결합니다. 기존 블로그 도메인은 별도로 유지합니다.
 
-`main` push → GitHub Actions에서 빌드 → GitHub Pages 배포. 저장소 Settings → Pages의 Source는 GitHub Actions입니다. `vite.config.js`의 base는 `/ersione-studio/`로 설정되어 있습니다.
+`main` push → GitHub Actions에서 빌드와 브라우저 검증 → GitHub Pages 배포. 저장소 Settings → Pages의 Source는 GitHub Actions입니다. `vite.config.js`의 base는 커스텀 도메인 루트에 맞춰 `/`로 설정되어 있습니다. HTTPS 인증서는 GitHub Pages에서 발급하며, 발급 완료 후 Enforce HTTPS를 켭니다.
 
 ## 다음 확장
 
