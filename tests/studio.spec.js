@@ -42,6 +42,7 @@ test('room objects can be selected directly',async({page})=>{
  const THREE=await import('three');
  await page.setViewportSize({width:1440,height:1000});await page.goto('');
  await expect(page.locator('canvas')).toBeVisible();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
  const bounds=await page.locator('canvas').boundingBox();
  const camera=new THREE.PerspectiveCamera(36,bounds.width/bounds.height,.1,100);
  camera.position.set(9,8,11);camera.lookAt(0,1,0);camera.updateMatrixWorld();
