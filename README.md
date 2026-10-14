@@ -37,9 +37,9 @@ npm run test:browser
 
 ## 배포
 
-공개 주소는 `https://studio.ersione.com/`입니다. 저장소의 Pages Custom domain에 `studio.ersione.com`을 설정하고, Cloudflare DNS의 DNS only CNAME `studio`를 `ersione.github.io`로 연결합니다. 기존 블로그 도메인은 별도로 유지합니다.
+공개 주소는 `https://studio.ersione.com/`입니다. 저장소의 Pages Custom domain에 `studio.ersione.com`을 설정하고, Cloudflare DNS의 Proxied CNAME `studio`를 `ersione.github.io`로 연결합니다. 사용자 HTTPS는 Cloudflare가 처리합니다. 기존 블로그 도메인은 별도로 유지합니다.
 
-`main` push → GitHub Actions에서 빌드와 브라우저 검증 → GitHub Pages 배포. 저장소 Settings → Pages의 Source는 GitHub Actions입니다. `vite.config.js`의 base는 커스텀 도메인 루트에 맞춰 `/`로 설정되어 있습니다. HTTPS 인증서는 GitHub Pages에서 발급하며, 발급 완료 후 Enforce HTTPS를 켭니다.
+`main` push → GitHub Actions에서 빌드와 브라우저 검증 → GitHub Pages 배포. 저장소 Settings → Pages의 Source는 GitHub Actions입니다. `vite.config.js`의 base는 커스텀 도메인 루트에 맞춰 `/`로 설정되어 있습니다. 현재 Cloudflare zone의 기존 SSL Full·Always Use HTTPS 설정을 사용합니다. Full은 원본 인증서의 도메인 일치를 검증하지 않습니다. GitHub Pages 원본 인증서는 별도 발급 대상이며, 발급 완료 후 Pages의 Enforce HTTPS와 원본 인증서 검증을 추가로 확인할 수 있습니다.
 
 ## 다음 확장
 
