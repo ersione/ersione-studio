@@ -12,6 +12,7 @@ for(const width of [320,390,1280])test(`console layout keeps all twelve boards a
  const dialog=page.getByRole('dialog');
  const checkWidth=async()=>expect(await dialog.evaluate(el=>el.scrollWidth<=el.clientWidth)).toBe(true);
  await checkWidth();expect((await dialog.boundingBox()).height).toBeLessThan(660);
+ const close=await dialog.getByRole('button',{name:'닫기',exact:true}).boundingBox(),sound=await dialog.locator('.game-sound').boundingBox();expect(sound.x+sound.width).toBeLessThanOrEqual(close.x);
  const widths=await dialog.locator('.arcade-card').evaluateAll(cards=>cards.map(card=>card.getBoundingClientRect().width));expect(Math.max(...widths)-Math.min(...widths)).toBeLessThan(1);
  for(let i=0;i<games.length;i++){
   if(i===6)await page.getByRole('button',{name:'다음 게임 목록',exact:true}).click();
