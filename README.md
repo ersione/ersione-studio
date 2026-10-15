@@ -1,46 +1,79 @@
 # Ersione’s Studio
 
-개발자의 프로젝트와 실험이 차곡차곡 쌓이는 작은 3D 작업실.
+만들고, 쉬고, 다시 상상하는 집. 개발자의 프로젝트와 작은 즐거움이 쌓이는 인터랙티브 포트폴리오입니다.
 
-**[작업실 들어가기](https://studio.ersione.com/)**
+**[집 둘러보기](https://studio.ersione.com/)**
 
-React + Three.js + Vite로 만든 정적 웹앱입니다. GitHub Pages에서 호스팅하며 서버나 API 키가 필요하지 않습니다.
+React + Three.js + Vite로 만든 정적 웹앱이며 GitHub Pages에서 호스팅합니다. 서버나 API 키는 필요하지 않습니다.
 
-## 지금 들어있는 것
+## 집 안의 공간
 
-- 드래그 회전, 스크롤 확대, 처음 시점 복귀가 가능한 3D 방
-- Company Lens 모니터, PogoAtlas 도감, Ersione Design System 팔레트 보드
-- 프로젝트 설명과 서비스·저장소 링크
-- 8장 카드 기억 게임, 밝은/어두운 배경 전환
-- 모바일 화면, 키보드로 열 수 있는 프로젝트 목록, 네이티브 모달
-- WebGL 미지원 시 정적 방 미리보기와 프로젝트 목록·게임 사용 가능
+- **거실**: 소파, 커피 테이블, 카드 기억 게임이 들어 있는 게임기
+- **작업방**: Company Lens 모니터, PogoAtlas 도감, Ersione Design System 팔레트, 프로필 액자
+- **주방**: 싱크대, 조리대, 냉장고, 아일랜드와 스툴
+- **휴식방**: 작은 침대와 협탁
 
-## 개발
+검은 모자·남색 옷·짧은 수염을 가진 캐릭터가 공간을 돌아다닙니다. 벽·가구 충돌 처리를 사용하고 문으로 방을 오갈 수 있습니다.
+
+## 조작
+
+| 조작 | 동작 |
+| --- | --- |
+| WASD / 방향키 | 현재 시점 기준으로 캐릭터 이동 |
+| 화면 방향 버튼 길게 누르기 | 모바일·마우스로 이동, 놓으면 정지 |
+| E / 근처 사물 열기 버튼 | 가까운 프로젝트 또는 게임 열기 |
+| 사물 클릭 / 프로젝트 목록 | 거리와 관계없이 바로 열기 |
+| 방 이동 버튼 | 해당 공간 입구로 캐릭터 이동 및 시점 확대 |
+| 집 전체 / ↺ | 전체 집 시점으로 복귀 |
+| 드래그 / 스크롤 | 3D 시점 회전 / 확대 |
+
+모달·백그라운드·포커스 이탈 시 이동을 멈춥니다. 방을 확대해서 걸을 때는 시점이 캐릭터를 따라갑니다. 키보드와 모바일을 지원하며 감소된 모션 설정을 존중합니다.
+
+WebGL2를 사용할 수 없는 환경에서는 **가벼운 모드**로 자동 전환합니다. 렌더링한 집 배경 위에 2D 캐릭터를 표시하며 동일한 방 구조·충돌 처리·이동·프로젝트 클릭·게임을 사용할 수 있습니다. 이 모드의 방 버튼은 해당 영역을 확대하며 자유로운 3D 회전은 제공하지 않습니다.
+
+## 개발과 검증
 
 Node.js 24 기준.
 
 ```sh
 npm ci
 npm run dev
+npm run test:unit
 npm run build
 npx playwright install chromium
 npm run test:browser
 ```
 
-개발 주소는 `/`입니다. `npm run preview`로 배포 결과를 확인합니다.
+개발 주소는 `/`입니다. `npm run preview`는 빌드 산출물을 로컬에서 확인하는 용도입니다. 단위 검증은 출입구·경계·벽·가구 충돌을, 브라우저 검증은 사물 선택·게임·캐릭터 이동·모달 중 정지·모바일·가벼운 모드·OG 메타데이터를 확인합니다.
 
-## 프로젝트 추가
+## 프로젝트와 공간 확장
 
-`src/projects.js`에 공개 프로젝트 정보를 추가합니다. `id`, `name`, `subtitle`, `description`, `category`, `color`, `position: [x, y, z]`, `kind`, `url`, `repo`를 지정합니다. 목록과 방의 클릭 대상이 같은 데이터를 사용합니다. `kind`는 `monitor`, `dex`, `palette`이며 생략하면 팔레트 형태로 배치됩니다. 사물이 겹치지 않도록 `position`을 지정하세요.
+`src/projects.js`의 항목에 `id`, `name`, `subtitle`, `description`, `category`, `color`, `position: [x, y, z]`, `kind`, `url`, `repo`를 지정합니다. 목록과 방 사물은 같은 데이터를 사용합니다. `kind`는 `monitor`, `dex`, `palette`이며 생략 시 팔레트로 배치됩니다. `position`은 다른 사물과 겹치지 않게 지정합니다.
 
-`src/room.js`는 방과 사물, `src/main.jsx`는 UI와 미니게임, `src/style.css`는 화면 스타일을 담당합니다. 새 게임은 게임기 모달을 확장해서 추가할 수 있습니다.
+- `src/house-world.js`: 방 이름·입구·벽과 가구의 충돌 영역, 공통 이동 계산
+- `src/room.js`: 3D 집, 가구, 캐릭터, 카메라와 상호작용
+- `src/flat-house.js`: 그래픽 가속이 없는 환경의 가벼운 탐험 모드
+- `src/main.jsx`: 방 이동 메뉴, 방향 버튼, 프로젝트 모달과 미니게임
+- `src/style.css`: 반응형 UI
+
+공간이나 가구를 추가할 때 눈에 보이는 배치와 충돌 영역을 함께 갱신합니다. 새 게임은 게임기 모달에서 확장할 수 있습니다.
+
+## 메신저 공유 미리보기
+
+`index.html`에 OG·Twitter Card 태그가 정적 HTML로 들어 있으므로 메신저 크롤러가 JavaScript 없이 제목·설명·이미지를 읽을 수 있습니다. 대표 이미지는 1200×630 PNG인 `public/og-house-v2.png`입니다.
+
+집 배치나 대표 문구를 바꾼 경우 아래 명령으로 이미지를 다시 만듭니다.
+
+```sh
+npm run update:images
+```
+
+이 명령은 실제 3D 집을 렌더링해 `room-preview.png`·캐릭터 없는 `house-base.png`와 공유 카드를 갱신합니다. `scripts/og-card.html`은 공유 카드 레이아웃이며 이미지 갱신 후 결과를 육안으로 확인합니다. `?capture=house`는 배경 이미지 촬영 시 3D 캐릭터를 숨기는 캡처용 쿼리입니다. 메신저가 예전 링크 정보를 캐시했다면 반영이 늦을 수 있습니다.
 
 ## 배포
 
-공개 주소는 `https://studio.ersione.com/`입니다. 저장소의 Pages Custom domain에 `studio.ersione.com`을 설정하고, Cloudflare DNS의 Proxied CNAME `studio`를 `ersione.github.io`로 연결합니다. 사용자 HTTPS는 Cloudflare가 처리합니다. 기존 블로그 도메인은 별도로 유지합니다.
+공개 주소는 `https://studio.ersione.com/`입니다. Pages Custom domain에 `studio.ersione.com`, Cloudflare에 DNS only CNAME `studio` → `ersione.github.io`를 설정합니다. 2026-10-15 확인 기준 GitHub Pages 인증서가 승인됐고 Enforce HTTPS가 켜져 있습니다. 기존 블로그 도메인은 별도로 관리합니다.
 
-`main` push → GitHub Actions에서 빌드와 브라우저 검증 → GitHub Pages 배포. 저장소 Settings → Pages의 Source는 GitHub Actions입니다. `vite.config.js`의 base는 커스텀 도메인 루트에 맞춰 `/`로 설정되어 있습니다. 현재 Cloudflare zone의 기존 SSL Full·Always Use HTTPS 설정을 사용합니다. Full은 원본 인증서의 도메인 일치를 검증하지 않습니다. GitHub Pages 원본 인증서는 별도 발급 대상이며, 발급 완료 후 Pages의 Enforce HTTPS와 원본 인증서 검증을 추가로 확인할 수 있습니다.
+`main` push → GitHub Actions에서 단위 검증·빌드·브라우저 검증 → GitHub Pages 배포. Source는 GitHub Actions, Vite base는 `/`입니다. OG 이미지와 가벼운 모드 배경도 정적 산출물로 배포합니다.
 
-## 다음 확장
-
-걸어 다니는 캐릭터, 프로젝트별 방, 추가 미니게임은 아직 구현하지 않았습니다. 현재는 방을 돌려보고 사물을 선택하는 첫 버전입니다. 3D 사물은 코드로 직접 구성했으며, 프로필 아바타는 사용자 사진을 참고해 생성한 일러스트입니다.
+3D 사물과 캐릭터는 코드로 구성했고, 프로필 액자는 사용자 사진을 참고해 생성한 일러스트입니다. 멀티플레이·저장되는 집 꾸미기·추가 게임은 아직 포함하지 않았습니다.
