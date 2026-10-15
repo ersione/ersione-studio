@@ -20,6 +20,18 @@ export function drawAction(ctx,s){
     const drift=Math.sin(s.waveTime*1.3)*13;
     for(const e of s.enemies){const x=e.x+drift;rect(ctx,x-14,e.y-9,28,14,colors[(e.id+s.level)%4]);rect(ctx,x-19,e.y-3,38,8,colors[(e.id+s.level)%4]);rect(ctx,x-8,e.y-6,4,4,'#203b32');rect(ctx,x+4,e.y-6,4,4,'#203b32');rect(ctx,x-11,e.y+6,4,5,'#b6cc8f');rect(ctx,x+7,e.y+6,4,5,'#b6cc8f');}
     ctx.globalAlpha=s.invincible>0?.5:1;ctx.fillStyle='#c7dfb1';ctx.beginPath();ctx.moveTo(s.x,335);ctx.lineTo(s.x+17,369);ctx.lineTo(s.x,360);ctx.lineTo(s.x-17,369);ctx.fill();rect(ctx,s.x-3,347,6,10,'#82c7c5');rect(ctx,s.x-4,366,8,6,'#e3bf7d');ctx.globalAlpha=1;
+  }else if(s.kind==='pong'){
+    ctx.setLineDash([8,8]);ctx.strokeStyle='#dce4b84d';ctx.beginPath();ctx.moveTo(16,200);ctx.lineTo(304,200);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#dce4b85c';ctx.font='bold 48px sans-serif';ctx.textAlign='center';ctx.fillText(s.opponentScore,160,155);ctx.fillText(s.points,160,280);
+    rect(ctx,s.opponent-34,26,68,9,'#d79581');rect(ctx,s.paddle-34,365,68,9,'#d9e4af');circle(ctx,s.ball.x,s.ball.y,7,'#f7e8bf');
+  }else if(s.kind==='flappy'){
+    rect(ctx,0,0,320,400,'#c7e0d1');for(let i=0;i<5;i++){circle(ctx,(i*83-s.time*12%83+320)%400,50+i%2*55,18,'#eef2dc');}
+    for(const p of s.pipes){const top=p.center-p.gap/2,bottom=p.center+p.gap/2;rect(ctx,p.x,0,44,top,'#668a63');rect(ctx,p.x-3,top-12,50,12,'#8eae78');rect(ctx,p.x,bottom,44,400-bottom,'#668a63');rect(ctx,p.x-3,bottom,50,12,'#8eae78');}
+    rect(ctx,0,388,320,12,'#c4a978');circle(ctx,82,s.y,12,'#e9c378');circle(ctx,78,s.y+3,7,'#dba05f');circle(ctx,87,s.y-4,3,'#263f38');rect(ctx,92,s.y,8,5,'#d88562');
+  }else if(s.kind==='rhythm'){
+    for(let lane=0;lane<3;lane++){rect(ctx,22+lane*94,24,88,352,lane%2?'#2d493e':'#294338');rect(ctx,28+lane*94,324,76,32,colors[lane]);ctx.fillStyle='#203b32';ctx.font='bold 20px sans-serif';ctx.textAlign='center';ctx.fillText(['A','S','D'][lane],66+lane*94,347);}
+    for(const n of s.notes){const y=340-(n.at-s.time)*150;rect(ctx,32+n.lane*94,y-8,68,16,colors[n.lane]);rect(ctx,35+n.lane*94,y-6,62,3,'#ffffff44');}
+    if(s.combo){ctx.fillStyle='#f7e8bf';ctx.font='bold 20px sans-serif';ctx.textAlign='center';ctx.fillText(s.combo+' COMBO',160,55);}
   }else{
     rect(ctx,0,0,24,400,'#668a63');rect(ctx,296,0,24,400,'#668a63');rect(ctx,24,0,272,400,'#324a45');
     for(const x of [28,288])for(let y=-40;y<400;y+=40)rect(ctx,x,y+(s.distance%40),4,23,'#dfdcb9');

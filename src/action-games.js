@@ -1,3 +1,4 @@
+import {newExtra,extraInput,tickExtra} from './extra-games.js';
 // Fixed 320 × 400 playfield. Engines mutate one local state for animation;
 // no timers, DOM access or global listeners live here.
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
@@ -8,6 +9,7 @@ function bricksFor(level){return Array.from({length:24},(_,i)=>({x:18+(i%6)*48,y
 function newWave(wave){return Array.from({length:12},(_,i)=>({x:38+(i%6)*48,y:38+Math.floor(i/6)*38,hp:1,id:i}));}
 export function newAction(kind,rng=Math.random){
   const base={kind,score:0,lives:3,level:1,status:'running',time:0};
+  if(['pong','flappy','rhythm'].includes(kind))return {...base,...newExtra(kind)};
   if(kind==='snake'){const snake=[{x:8,y:10},{x:7,y:10},{x:6,y:10}];return {...base,snake,food:foodFor(snake,rng),dir:'right',nextDir:'right',elapsed:0};}
   if(kind==='breakout')return {...base,paddle:160,ball:{x:160,y:325,vx:95,vy:-160},bricks:bricksFor(1),serve:.6};
   if(kind==='shooter')return {...base,x:160,shots:[],enemies:newWave(1),bullets:[],shotWait:0,enemyWait:1.2,enemyTurn:0,invincible:0,waveTime:0};
@@ -15,6 +17,7 @@ export function newAction(kind,rng=Math.random){
 }
 export function actionInput(state,action){
   if(state.status!=='running')return;
+  if(['pong','flappy','rhythm'].includes(state.kind))extraInput(state,action);
   if(state.kind==='snake'&&vectors[action]&&action!==opposite[state.dir])state.nextDir=action;
   if(state.kind==='racer'&&['left','right'].includes(action))state.lane=clamp(state.lane+(action==='left'?-1:1),0,2);
 }
@@ -89,6 +92,7 @@ export function tickAction(state,dt,input={},rng=Math.random){
   if(state.kind==='snake'){state.elapsed+=dt;const speed=Math.max(.08,.18-(state.level-1)*.012);while(state.elapsed>=speed&&state.status==='running'){state.elapsed-=speed;snakeTick(state,rng);}}
   else if(state.kind==='breakout')breakoutTick(state,dt,input);
   else if(state.kind==='shooter')shooterTick(state,dt,input);
+  else if(['pong','flappy','rhythm'].includes(state.kind))tickExtra(state,dt,input,rng);
   else racerTick(state,dt,rng);
   return state;
 }

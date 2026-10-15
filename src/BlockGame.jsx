@@ -1,9 +1,12 @@
 import React,{useEffect,useRef,useState} from 'react';
+import {useGameSound,useGameFeedback} from './game-audio';
 import {COLORS,SHAPES,newGame,step,landing} from './block-game';
 
 export default function BlockGame(){
+  const {play:playSound}=useGameSound();
   const [game,setGame]=useState(newGame),[started,setStarted]=useState(false),[paused,setPaused]=useState(false);
   const boardRef=useRef(null);
+  useGameFeedback({score:game.score,over:game.over,paused});
   const level=1+Math.floor(game.lines/10),active=started&&!paused&&!game.over;
   useEffect(()=>{
     if(!active)return;
@@ -16,8 +19,8 @@ export default function BlockGame(){
     window.addEventListener('blur',pause);document.addEventListener('visibilitychange',visibility);
     return()=>{window.removeEventListener('blur',pause);document.removeEventListener('visibilitychange',visibility);};
   },[]);
-  const play=action=>{if(active)setGame(g=>step(g,action));};
-  const restart=()=>{setGame(newGame());setStarted(true);setPaused(false);boardRef.current?.focus();};
+  const play=action=>{if(active){playSound(action==='drop'?'hit':'move');setGame(g=>step(g,action));}};
+  const restart=()=>{playSound('start');setGame(newGame());setStarted(true);setPaused(false);boardRef.current?.focus();};
   function keydown(e){
     if(e.altKey||e.ctrlKey||e.metaKey)return;
     if(e.key===' '&&e.target.tagName==='BUTTON')return;

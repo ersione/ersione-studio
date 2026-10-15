@@ -12,10 +12,10 @@ async function select(page,id){
 }
 async function freeze(page){await page.clock.install();await page.clock.pauseAt(new Date(Date.now()+1000));}
 
-for(const width of [320,390])test(`10-in-1 library and all new games fit at ${width}px`,async({page})=>{
+for(const width of [320,390])test(`12-in-1 library and all new games fit at ${width}px`,async({page})=>{
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.setViewportSize({width,height:844});await openPack(page);
-  await expect(page.getByLabel('10가지 게임이 담긴 멀티게임팩')).toBeVisible();
+  await expect(page.getByLabel('12가지 게임이 담긴 멀티게임팩')).toBeVisible();
   const dialog=page.getByRole('dialog');
   expect(await dialog.evaluate(el=>el.scrollHeight<=el.clientHeight)).toBe(true);
   await page.screenshot({path:`test-results/pack-10-${width}.png`});
@@ -25,8 +25,8 @@ for(const width of [320,390])test(`10-in-1 library and all new games fit at ${wi
     await page.screenshot({path:`test-results/${id}-${width}.png`});
     await page.getByRole('button',{name:'← 게임 목록'}).click();await expect(page.locator(`[data-game="${id}"]`)).toBeFocused();
   }
-  await page.locator('[data-game="mines"]').focus();await page.keyboard.press('ArrowLeft');await expect(page.locator('[data-game="blocks"]')).toBeFocused();
-  await page.keyboard.press('ArrowRight');await expect(page.locator('[data-game="mines"]')).toBeFocused();
+  await select(page,'mines');await page.getByRole('button',{name:'← 게임 목록'}).click();await page.locator('[data-game="mines"]').focus();await page.keyboard.press('ArrowLeft');await expect(page.locator('[data-game="soko"]')).toBeFocused();
+  await page.keyboard.press('ArrowRight');await expect(page.locator('[data-game="blocks"]')).toBeFocused();
   expect(errors).toEqual([]);
 });
 test('mines first click is safe, mobile flags block reveals, and reset clears the board',async({page})=>{
