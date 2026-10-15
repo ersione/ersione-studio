@@ -93,9 +93,18 @@ export function createRoom(host,projects,onSelect,onHover,onError,onStatus=()=>{
     if(p.kind==='monitor'){
       box(1.6,.95,.13,0,.4,0,dark,g);box(1.4,.75,.03,0,.4,.085,mat('#dce9ed'),g);box(.13,.35,.12,0,-.2,0,dark,g);box(.65,.06,.35,0,-.36,0,dark,g);
       for(let n=0;n<5;n++)box(.16,.1+n*.09,.03,-.5+n*.25,.2+n*.045,.11,accent,g);sign('COMPANY LENS',0,.65,.12,1.2,.15,g,'#dce9ed','#2b609f');
-    }else if(p.kind==='dex'){
-      box(.78,1.05,.18,0,0,0,accent,g);box(.57,.55,.03,0,.1,.11,mat('#d8e6ce'),g);const ball=sphere(.13,0,.1,.14,white,g);ball.scale.z=.18;
-      box(.24,.07,.04,-.19,-.35,.13,dark,g);box(.07,.24,.04,-.19,-.35,.13,dark,g);sphere(.055,.22,-.35,.13,mat('#dc877c'),g);sign('ATLAS',0,.36,.14,.46,.12,g,'#d8e6ce','#397a70');
+    }else if(p.kind==='pokeball'||p.kind==='dex'){
+      // Red/white hemispheres, a black equator and a round front button.
+      for(const [start,color] of [[0,'#d9574b'],[Math.PI/2,'#faf5e9']]){
+        const shell=new THREE.Mesh(new THREE.SphereGeometry(.48,32,20,0,Math.PI*2,start,Math.PI/2),mat(color,{roughness:.35}));
+        shell.castShadow=true;shell.receiveShadow=true;g.add(shell);
+      }
+      cylinder(.485,.485,.055,0,0,0,dark,g);
+      const rim=cylinder(.14,.14,.055,0,0,.47,dark,g);rim.rotation.x=Math.PI/2;
+      const button=cylinder(.102,.102,.045,0,0,.51,white,g);button.rotation.x=Math.PI/2;
+      const center=cylinder(.066,.066,.012,0,0,.54,mat('#e5e9df'),g);center.rotation.x=Math.PI/2;
+      cylinder(.18,.22,.17,0,-.55,0,dark,g);cylinder(.32,.32,.07,0,-.64,0,white,g);
+      sign('POGO ATLAS',0,-.83,.42,1,.17,g,'#f6f3e9','#397a70');
     }else{
       box(1.15,.95,.1,0,0,0,wood,g);box(1.03,.83,.03,0,0,.07,white,g);['#2b609f','#157575','#da603c','#8054a5','#b84b7b','#7e8791'].forEach((col,n)=>sphere(.115,-.3+n%3*.3,.17-Math.floor(n/3)*.32,.11,mat(col),g));
     }

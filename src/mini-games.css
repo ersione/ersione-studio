@@ -8,8 +8,18 @@
 .mini-game > .eyebrow { margin-top: 0; }
 .mini-stats { display: flex; align-items: center; justify-content: space-between; gap: 6px; background: #e8ecdf; padding: 12px; border-radius: 10px; margin: 16px 0; font-size: 11px; }
 .mini-stats b { margin-left: 5px; font-size: 15px; font-variant-numeric: tabular-nums; }
+.race-progress { max-width: 300px; margin: -5px auto 12px; }
+.race-details { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; color: #637659; }
+.race-details span:first-child { color: #ad6757; }
+.race-progress progress { display: block; width: 100%; height: 5px; margin-top: 8px; border: 0; border-radius: 5px; overflow: hidden; background: #e0e6d6; accent-color: #80975e; }
+.race-progress progress::-webkit-progress-bar { background: #e0e6d6; }
+.race-progress progress::-webkit-progress-value { background: #80975e; }
+.race-progress progress::-moz-progress-bar { background: #80975e; }
 .mini-board-wrap { position: relative; }
 .action-game .mini-board-wrap { max-width: 300px; margin: 0 auto; }
+.racing-game .mini-board-wrap { max-width: 260px; }
+.racing-game .mini-stats { margin: 12px 0; }
+.racing-game .game-instructions { margin: 10px 0; }
 .action-board { display: block; width: 100%; height: auto; border-radius: 12px; background: #203b32; touch-action: none; }
 .action-board:focus-visible,.soko-board:focus-visible { outline: 3px solid #2b609f; outline-offset: 3px; }
 .mini-overlay { position: absolute; z-index: 3; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 20px; border-radius: 12px; background: #203b32ed; color: #edf0d7; text-align: center; }

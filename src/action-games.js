@@ -11,7 +11,7 @@ export function newAction(kind,rng=Math.random){
   if(kind==='snake'){const snake=[{x:8,y:10},{x:7,y:10},{x:6,y:10}];return {...base,snake,food:foodFor(snake,rng),dir:'right',nextDir:'right',elapsed:0};}
   if(kind==='breakout')return {...base,paddle:160,ball:{x:160,y:325,vx:95,vy:-160},bricks:bricksFor(1),serve:.6};
   if(kind==='shooter')return {...base,x:160,shots:[],enemies:newWave(1),bullets:[],shotWait:0,enemyWait:1.2,enemyTurn:0,invincible:0,waveTime:0};
-  return {...base,lane:1,cars:[],spawnWait:1.1,invincible:0,distance:0,nextId:0};
+  return {...base,lane:1,cars:[],spawnWait:1.1,invincible:0,distance:0,nextId:0,waves:0,laneBag:[],safeBag:[],lastSafe:null,dodged:0,speed:144};
 }
 export function actionInput(state,action){
   if(state.status!=='running')return;
@@ -52,13 +52,35 @@ function shooterTick(s,dt,input){
   if(s.enemies.some(e=>e.y>325))s.status='over';
   if(!s.enemies.length&&s.status==='running'){if(s.level>=3)s.status='won';else{s.level++;s.enemies=newWave(s.level);s.bullets=[];s.waveTime=0;s.enemyWait=1;}}
 }
+export function racerDifficulty(time){
+  const progress=clamp(time,0,60);
+  return {speed:144+progress*3.4,interval:1.6-progress*.014,level:Math.min(6,1+Math.floor(progress/10))};
+}
+function drawLane(s,key,rng){
+  if(!s[key].length){
+    s[key]=[0,1,2];
+    for(let i=2;i>0;i--){const j=Math.floor(rng()*(i+1));[s[key][i],s[key][j]]=[s[key][j],s[key][i]];}
+    // Pair waves always change their escape lane, including at bag boundaries.
+    if(key==='safeBag'&&s[key].at(-1)===s.lastSafe)[s[key][0],s[key][2]]=[s[key][2],s[key][0]];
+  }
+  return s[key].pop();
+}
 function racerTick(s,dt,rng){
-  const speed=130+Math.min(100,s.time*1.7);s.invincible=Math.max(0,s.invincible-dt);s.distance+=speed*dt;s.score=Math.floor(s.distance/10);s.level=1+Math.floor(s.time/15);
-  s.spawnWait-=dt;
-  if(s.spawnWait<=0){s.cars.push({lane:Math.floor(rng()*3),y:-60,id:s.nextId++});s.spawnWait=Math.max(.85,1.4-s.time*.008);}
-  for(const car of s.cars)car.y+=speed*dt;
+  const difficulty=racerDifficulty(s.time);s.speed=difficulty.speed;s.level=difficulty.level;
+  s.invincible=Math.max(0,s.invincible-dt);s.distance+=s.speed*dt;s.spawnWait-=dt;
+  if(s.spawnWait<=0){
+    const pair=s.time>=40||(s.time>=20&&s.waves%3===2);
+    let lanes;
+    if(pair){const safe=drawLane(s,'safeBag',rng);s.lastSafe=safe;lanes=[0,1,2].filter(lane=>lane!==safe);}
+    else lanes=[drawLane(s,'laneBag',rng)];
+    for(const lane of lanes)s.cars.push({lane,y:-60,id:s.nextId++,wave:s.waves,passed:false});
+    s.waves++;s.spawnWait+=difficulty.interval;
+  }
+  for(const car of s.cars)car.y+=s.speed*dt;
   const hit=s.cars.find(car=>car.lane===s.lane&&Math.abs(car.y-335)<45);
-  if(hit&&s.invincible<=0){s.lives--;s.invincible=1.5;s.cars=s.cars.filter(car=>car!==hit);if(!s.lives)s.status='over';}
+  if(hit&&s.invincible<=0){s.lives--;s.invincible=1.05;s.cars=s.cars.filter(car=>car!==hit);if(!s.lives)s.status='over';}
+  for(const car of s.cars)if(car.y>380&&!car.passed){car.passed=true;s.dodged++;}
+  s.score=Math.floor(s.distance/10)+s.dodged*25;
   s.cars=s.cars.filter(car=>car.y<460);if(s.time>=60&&s.status==='running')s.status='won';
 }
 export function tickAction(state,dt,input={},rng=Math.random){
