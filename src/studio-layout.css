@@ -18,9 +18,9 @@ dialog:has(.arcade) { width: 820px; max-width: calc(100vw - 16px); padding: 20px
 .console-top { margin-bottom: 9px; }
 .console-screen { padding: 14px; border-width: 5px; }
 .console-screen .eyebrow { margin: 11px 0 6px; }
-.console-screen .arcade-library { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; margin: 12px 0; }
-.console-screen .arcade-card { min-height: 68px; padding: 9px; gap: 10px; }
-.console-screen .arcade-card:last-child { grid-column: 1 / -1; }
+.console-screen .arcade-library { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 12px 0; }
+.console-screen .arcade-card { flex: 0 0 calc((100% - 8px)/2); min-width: 0; min-height: 68px; padding: 9px; gap: 10px; }
+
 .console-screen .arcade-cover { flex-basis: 36px; height: 40px; font-size: 18px; }
 .console-screen .arcade-card > span:nth-child(2) { min-width: 0; gap: 3px; }
 .console-screen .arcade-card small { line-height: 1.4; }
@@ -44,8 +44,7 @@ dialog .console-caption { margin-top: 6px; }
 .memory-game .game-grid { margin-top: 14px; }
 
 @media (min-width: 900px) {
-  .console-screen .arcade-library { grid-template-columns: repeat(3,minmax(0,1fr)); }
-  .console-screen .arcade-card:last-child { grid-column: span 2; }
+  .console-screen .arcade-card { flex-basis: calc((100% - 16px)/3); }
 }
 
 @media (min-width: 700px) {

@@ -33,7 +33,8 @@ export function createRoom(host,projects,onSelect,onHover,onError,onStatus=()=>{
   function sphere(r,x,y,z,m,parent=scene){const o=new THREE.Mesh(new THREE.SphereGeometry(r,20,14),m);o.position.set(x,y,z);o.castShadow=true;parent.add(o);return o;}
   function cylinder(r1,r2,h,x,y,z,m,parent=scene){const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,24),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o;}
   function sign(text,x,y,z,w=1.5,h=.3,parent=scene,bg='#f6f3e9',fg='#344e45'){
-    const c=document.createElement('canvas');c.width=768;c.height=144;const ctx=c.getContext('2d');ctx.fillStyle=bg;ctx.fillRect(0,0,768,144);ctx.fillStyle=fg;ctx.font='600 58px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,384,76);
+    const c=document.createElement('canvas');c.height=192;c.width=Math.round(c.height*w/h);const ctx=c.getContext('2d');ctx.fillStyle=bg;ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle=fg;
+    let fontSize=112;ctx.font=`700 ${fontSize}px sans-serif`;while(ctx.measureText(text).width>c.width-48&&fontSize>24){fontSize-=2;ctx.font=`700 ${fontSize}px sans-serif`;}ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,c.width/2,c.height/2);
     const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;textures.push(t);const o=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:t}));o.position.set(x,y,z);parent.add(o);return o;
   }
   function plant(x,z,size=1,y=0){
@@ -87,7 +88,7 @@ export function createRoom(host,projects,onSelect,onHover,onError,onStatus=()=>{
   box(1.16,.15,.45,5.7,.75,4.4,white);box(.55,.62,.55,4.55,.31,4.35,wood);cylinder(.12,.14,.23,4.55,.79,4.35,mat('#e2cda8'));
   plant(-6.3,-4.4,.7);plant(-6.15,3.9,1.1);plant(6.25,.55,.8);plant(-.4,-4.45,.65,1.2);
   // Project objects remain data-driven.
-  const targets=[],interactionPoints=[];
+  const targets=[],interactionPoints=[],projectSigns=[];
   projects.forEach((p,i)=>{
     const g=new THREE.Group();g.position.set(...(p.position||[-3+i,1.3,-3.8]));g.userData.project=p.id;scene.add(g);const accent=mat(p.color);
     if(p.kind==='monitor'){
@@ -108,7 +109,7 @@ export function createRoom(host,projects,onSelect,onHover,onError,onStatus=()=>{
     }else{
       box(1.15,.95,.1,0,0,0,wood,g);box(1.03,.83,.03,0,0,.07,white,g);['#2b609f','#157575','#da603c','#8054a5','#b84b7b','#7e8791'].forEach((col,n)=>sphere(.115,-.3+n%3*.3,.17-Math.floor(n/3)*.32,.11,mat(col),g));
     }
-    sign(String(i+1).padStart(2,'0'),0,.98,.13,.36,.19,g,'#f6f3e9',p.color);targets.push(g);
+    projectSigns.push(sign(p.roomLabel||p.name,0,1.05,.13,p.id==='design'?1.65:1.5,.28,g,'#263e43','#fffaf0'));targets.push(g);
     interactionPoints.push({id:p.id,x:g.position.x,z:g.position.z});
   });
   const game=new THREE.Group();game.position.set(1.85,.75,3.5);game.userData.project='game';scene.add(game);
@@ -170,6 +171,7 @@ export function createRoom(host,projects,onSelect,onHover,onError,onStatus=()=>{
     }else if(limbs.some(l=>l.rotation.x!==0)){limbs.forEach(l=>l.rotation.x=0);body.position.y=0;dirty=true;}
     // Keep the name tag legible as the character turns.
     nameplate.quaternion.copy(player.quaternion.clone().invert().multiply(camera.quaternion));
+    for(const label of projectSigns)label.quaternion.copy(camera.quaternion);
     if(now-lastReport>100){status();lastReport=now;}
     const changed=controls.update();if(changed||dirty){renderer.render(scene,camera);dirty=false;}
   }
