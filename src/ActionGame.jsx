@@ -23,13 +23,13 @@ export default function ActionGame({kind}){
   const active=started&&!paused&&hud.status==='running',continuous=['breakout','shooter','pong'].includes(kind);
   const clearInput=()=>{input.current={};touch.current=null;};
   useEffect(()=>{if(!active){clearInput();return;}let raf,last=performance.now(),report=last;
-    function frame(now){const dt=Math.min((now-last)/1000,.033);last=now;const previous=state.current.time;tickAction(state.current,dt,input.current);if(kind==='rhythm')for(const note of state.current.notes)if(note.at>previous&&note.at<=state.current.time)tone(note.lane);const ctx=canvas.current?.getContext('2d');if(ctx)drawAction(ctx,state.current);if(now-report>100||state.current.status!=='running'){setHud({...state.current});report=now;}if(state.current.status==='running')raf=requestAnimationFrame(frame);}
+    function frame(now){const dt=Math.min((now-last)/1000,.033);last=now;const previous=state.current.time,velocity=state.current.ball?.vy,shooting=kind==='shooter'&&state.current.shotWait<=dt;tickAction(state.current,dt,input.current);if(velocity&&Math.sign(velocity)!==Math.sign(state.current.ball.vy))playSound('hit');if(shooting)playSound('move');if(kind==='rhythm')for(const note of state.current.notes)if(note.at>previous&&note.at<=state.current.time)tone(note.lane);const ctx=canvas.current?.getContext('2d');if(ctx)drawAction(ctx,state.current);if(now-report>100||state.current.status!=='running'){setHud({...state.current});report=now;}if(state.current.status==='running')raf=requestAnimationFrame(frame);}
     raf=requestAnimationFrame(frame);return()=>{cancelAnimationFrame(raf);clearInput();};
   },[active,kind]);
   useEffect(()=>{const ctx=canvas.current?.getContext('2d');if(ctx)drawAction(ctx,state.current);},[kind,started]);
   function start(){playSound('start');state.current=newAction(kind);input.current={};setHud({...state.current});setPaused(false);setStarted(true);canvas.current?.focus();const ctx=canvas.current?.getContext('2d');if(ctx)drawAction(ctx,state.current);}
   function release(direction){input.current[direction]=false;setHud({...state.current});}
-  function move(direction){if(!active)return;actionInput(state.current,direction);if(kind==='rhythm'&&direction.startsWith('hit'))tone(Number(direction.at(-1)));if(kind==='racer'){setHud({...state.current});const ctx=canvas.current?.getContext('2d');if(ctx)drawAction(ctx,state.current);}}
+  function move(direction){if(!active)return;const lane=state.current.lane;actionInput(state.current,direction);if(kind==='flappy'&&direction==='flap')playSound('hit');if(kind==='snake'||(kind==='racer'&&lane!==state.current.lane))playSound('move');if(kind==='rhythm'&&direction.startsWith('hit'))tone(Number(direction.at(-1)));if(kind==='racer'){setHud({...state.current});const ctx=canvas.current?.getContext('2d');if(ctx)drawAction(ctx,state.current);}}
   function keydown(e){
     if(e.ctrlKey||e.metaKey||e.altKey)return;
     if(kind==='rhythm'&&['a','s','d'].includes(e.key.toLowerCase())){e.preventDefault();if(!e.repeat)move('hit'+['a','s','d'].indexOf(e.key.toLowerCase()));return;}
