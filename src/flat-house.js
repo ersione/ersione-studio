@@ -8,7 +8,7 @@ export function createFlatHouse(host,projects,onSelect,onHover,onStatus){
   const image=new Image();image.src=import.meta.env.BASE_URL+'house-base.png';let dirty=true,paused=false,night=false,position={x:.5,z:1.7},keys=new Set(),pad={x:0,z:0},nearby=null,lastStatus='',scale=1,center=null,w=1,h=1;
   image.onload=()=>{dirty=true;};
   const camera=new PerspectiveCamera(36,1080/680,.1,100);camera.position.set(13,14,17);camera.lookAt(0,.4,0);camera.updateMatrixWorld();
-  const points=projects.map(p=>({id:p.id,x:p.position[0],y:p.position[1]+(p.kind==='monitor'?.4:0),z:p.position[2]}));points.push({id:'game',x:1.85,y:1,z:3.9});
+  const points=projects.map(p=>({id:p.id,x:p.position[0],y:p.position[1]+(p.kind==='monitor'?.4:0),z:p.position[2]}));points.push({id:'game',x:1.85,y:1.14,z:3.46});
   function projected(x,y,z){const v=new Vector3(x,y,z).project(camera);return {x:(v.x+1)/2,y:(1-v.y)/2};}
   function frame(){const iw=image.naturalWidth||1080,ih=image.naturalHeight||680;camera.aspect=iw/ih;camera.updateProjectionMatrix();const fit=Math.min(w/iw,h/ih),dw=iw*fit*scale,dh=ih*fit*scale;const c=center||{x:.5,y:.5};return {dw,dh,ox:w/2-c.x*dw,oy:h/2-c.y*dh};}
   function screen(x,y,z,f=frame()){const p=projected(x,y,z);return {x:f.ox+p.x*f.dw,y:f.oy+p.y*f.dh};}
@@ -18,7 +18,7 @@ export function createFlatHouse(host,projects,onSelect,onHover,onStatus){
   function render(){
     const f=frame();ctx.clearRect(0,0,w,h);if(image.complete&&image.naturalWidth)ctx.drawImage(image,f.ox,f.oy,f.dw,f.dh);
     const foot=screen(position.x,.08,position.z,f),head=screen(position.x,1.6,position.z,f),size=Math.max(18,foot.y-head.y);ctx.save();ctx.translate(foot.x,foot.y);ctx.scale(size/50,size/50);
-    oval(0,-1,11,4,'#40533a33');rect(-8,-15,6,12,'#596c72');rect(3,-15,6,12,'#596c72');rect(-9,-4,8,4,'#273239');rect(3,-4,8,4,'#273239');rect(-11,-32,22,20,'#293f54');rect(-15,-29,5,17,'#d9a27f');rect(10,-29,5,17,'#d9a27f');oval(0,-40,10,11,'#d9a27f');oval(0,-36,8,5,'#58453b');oval(0,-40,8,5,'#d9a27f');oval(-4,-41,1,1,'#263238');oval(4,-41,1,1,'#263238');oval(0,-48,11,5,'#252b30');rect(-11,-47,27,3,'#252b30');ctx.restore();
+    oval(0,-1,11,4,'#40533a33');rect(-8,-15,6,12,'#596c72');rect(3,-15,6,12,'#596c72');rect(-9,-4,8,4,'#273239');rect(3,-4,8,4,'#273239');rect(-11,-32,22,20,'#293f54');oval(-13,-22,3,8,'#f1be9e');oval(13,-22,3,8,'#f1be9e');oval(-13,-39,3,3,'#f1be9e');oval(13,-39,3,3,'#f1be9e');oval(0,-40,13,12,'#f1be9e');oval(-5,-41,1.7,2,'#263238');oval(5,-41,1.7,2,'#263238');oval(-5.5,-42,.6,.7,'#fff8ec');oval(4.5,-42,.6,.7,'#fff8ec');oval(-8,-37,3,1.5,'#ed9b91');oval(8,-37,3,1.5,'#ed9b91');ctx.strokeStyle='#263238';ctx.lineWidth=1;ctx.beginPath();ctx.arc(0,-37,2.5,0,Math.PI);ctx.stroke();oval(0,-49,14,5,'#252b30');rect(-13,-48,29,3,'#252b30');ctx.restore();
     if(night){ctx.fillStyle='#253e6422';ctx.fillRect(0,0,w,h);}
   }
   const stop=()=>{keys.clear();pad={x:0,z:0};};const interact=()=>{if(!paused&&nearby)onSelect(nearby);};

@@ -12,7 +12,7 @@ test('room renders and projects open accessible dialogs',async({page})=>{
  await page.getByRole('button',{name:'처음 시점으로 돌아가기'}).click();expect(errors).toEqual([]);
 });
 test('memory game can be completed and restarted',async({page})=>{
- await page.goto('');await page.getByRole('button',{name:/잠깐, 쉬어가기/}).click();
+ await page.goto('');await page.getByRole('button',{name:/잠깐, 쉬어가기/}).click();await page.getByRole('button',{name:/카드 맞추기/}).click();
  const seen=new Map();
  for(let i=0;i<8;i+=2){
   const a=page.locator('.game-grid button').nth(i),b=page.locator('.game-grid button').nth(i+1);
@@ -46,7 +46,7 @@ test('room objects can be selected directly',async({page})=>{
  const bounds=await page.locator('canvas').boundingBox();
  const camera=new THREE.PerspectiveCamera(36,bounds.width/bounds.height,.1,100);
  camera.position.set(13,14,17);camera.lookAt(0,.4,0);camera.updateMatrixWorld();
- for(const [point,title] of [[[-6,1.45,-1.26],'PogoAtlas'],[[-3.6,1.9,-3.83],'Company Lens'],[[-1.65,1.8,-2.98],'Ersione Design System'],[[1.85,1,4],'작은 기억 게임']]){
+ for(const [point,title] of [[[-6,1.45,-1.26],'PogoAtlas'],[[-3.6,1.9,-3.83],'Company Lens'],[[-1.65,1.8,-2.98],'Ersione Design System'],[[1.85,1.14,3.46],'오늘은 무슨 게임 할까요?']]){
   const v=new THREE.Vector3(...point).project(camera);
   await page.mouse.click(bounds.x+(v.x+1)*bounds.width/2,bounds.y+(1-v.y)*bounds.height/2);
   await expect(page.getByRole('dialog').getByRole('heading',{name:title,exact:true})).toBeVisible();

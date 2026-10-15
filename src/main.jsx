@@ -3,7 +3,13 @@ import { createRoot } from 'react-dom/client';
 import { projects } from './projects';
 import { createRoom } from './room';
 import { rooms } from './house-world';
+import BlockGame from './BlockGame';
+import NumberGame from './NumberGame';
+import ActionGame from './ActionGame';
+import {MinesGame,SokoGame,MoleGame} from './PuzzleGames';
+import {games} from './games';
 import './style.css';
+import './mini-games.css';
 
 function MemoryGame() {
   const symbols=['◈','✳','⌘','◉','◈','✳','⌘','◉'];
@@ -12,6 +18,29 @@ function MemoryGame() {
   useEffect(()=>{if(open.length!==2)return;const [a,b]=open;const timer=setTimeout(()=>{if(cards[a]===cards[b])setMatched(m=>[...m,a,b]);setOpen([]);},650);return()=>clearTimeout(timer);},[open,cards]);
   const restart=()=>{setCards(shuffle());setOpen([]);setMatched([]);setMoves(0);};
   return <><p className="eyebrow">A LITTLE BREAK / 01</p><h2>작은 기억 게임</h2><p>같은 모양의 카드를 찾아보세요.</p><div className="game-grid">{cards.map((s,i)=><button key={i} className={matched.includes(i)?'matched':''} aria-label={open.includes(i)||matched.includes(i)?`카드 ${i+1}: ${s}`:`카드 ${i+1} 뒤집기`} disabled={matched.includes(i)||open.includes(i)||open.length===2} onClick={()=>{setOpen(o=>[...o,i]);if(open.length===1)setMoves(m=>m+1);}}>{open.includes(i)||matched.includes(i)?s:'?'}</button>)}</div><p aria-live="polite">{matched.length===8?'모두 찾았어요! 잠깐의 휴식 완료.':`${moves}번 시도 · ${matched.length/2}/4쌍`}</p><button className="action secondary" onClick={restart}>다시 하기 ↻</button></>;
+}
+function Arcade() {
+  const [game,setGame]=useState(null),[page,setPage]=useState(0),content=useRef(null),lastGame=useRef(null);
+  const pages=Math.ceil(games.length/5),visibleGames=games.slice(page*5,page*5+5);
+  useEffect(()=>{if(game)content.current?.querySelector('.number-board,.block-overlay button,.mini-overlay button,.soko-board,.mine-board button,.game-grid button')?.focus();else if(lastGame.current)content.current?.querySelector(`[data-game="${lastGame.current}"]`)?.focus();},[game]);
+  useEffect(()=>{if(!game){const first=content.current?.querySelector('.arcade-card');first?.focus();}},[page]);
+  function menuKey(e){
+    if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();setPage(p=>(p+(e.key==='ArrowRight'?1:-1)+pages)%pages);return;}
+    if(!['ArrowUp','ArrowDown'].includes(e.key))return;
+    e.preventDefault();const buttons=[...content.current.querySelectorAll('.arcade-card')],index=buttons.indexOf(document.activeElement);
+    const next=index<0?(e.key==='ArrowDown'?0:buttons.length-1):(index+(e.key==='ArrowDown'?1:-1)+buttons.length)%buttons.length;buttons[next]?.focus();
+  }
+  return <div className={game?'arcade':'arcade arcade-hub'} ref={content} tabIndex={-1}>{game?<><button className="arcade-back" onClick={()=>setGame(null)}>← 게임 목록</button>{game==='memory'?<MemoryGame/>:game==='blocks'?<BlockGame/>:game==='numbers'?<NumberGame/>:game==='mines'?<MinesGame/>:game==='soko'?<SokoGame/>:game==='moles'?<MoleGame/>:<ActionGame key={game} kind={game}/>}</>:<>
+    <div className="game-pack" aria-label="10가지 게임이 담긴 멀티게임팩"><span>MULTI GAME PACK</span><strong>10 <i>IN</i> 1</strong><span className="pack-grip"/></div>
+    <div className="console-shell"><div className="console-top"><span><span className="console-led"/> POWER ON</span><span>e / pocket</span></div>
+      <div className="console-screen"><div className="screen-top"><span>◆ PACK LOADED</span><span>10 GAMES</span></div><p className="eyebrow">ERSIONE GAME COLLECTION</p><h2>오늘은 무슨 게임 할까요?</h2><p className="screen-instruction">게임을 골라 START!</p>
+        <div className="arcade-library" aria-label="미니게임 목록" onKeyDown={menuKey}>{visibleGames.map((item,i)=><button key={item.id} data-game={item.id} onClick={()=>{lastGame.current=item.id;setGame(item.id);}} className="arcade-card"><span className="arcade-cover" style={{'--game-color':item.color}}>{item.icon}</span><span><small>{String(page*5+i+1).padStart(2,'0')} / {item.tag}</small><strong>{item.name}</strong><span>{item.description}</span></span><span className="arcade-play">▶</span></button>)}</div>
+        <div className="pack-pages"><button aria-label="이전 게임 목록" disabled={page===0} onClick={()=>setPage(p=>p-1)}>◀</button><span>{page+1} / {pages} PAGE</span><button aria-label="다음 게임 목록" disabled={page===pages-1} onClick={()=>setPage(p=>p+1)}>▶</button></div><div className="screen-bottom"><span>↑ ↓ SELECT · ← → PAGE</span><span>ENTER / TOUCH ▶</span></div>
+      </div>
+      <div className="console-bottom" aria-hidden="true"><span className="console-dpad"><i/><i/></span><div className="console-speaker"><i/><i/><i/></div><span className="console-buttons"><i>B</i><i>A</i></span></div>
+      <p className="console-caption">팩 하나에 담은 열 가지 작은 즐거움</p>
+    </div>
+  </>}</div>;
 }
 function App() {
   const host=useRef(null),room=useRef(null),dialog=useRef(null),previousFocus=useRef(null);
@@ -23,7 +52,7 @@ function App() {
   useEffect(()=>{room.current?.setPaused(Boolean(selected));},[selected]);
   useEffect(()=>{room.current?.setNight(night);},[night]);
   const currentRoom=rooms.find(r=>r.id===player.room);
-  const nearbyName=projects.find(p=>p.id===player.nearby)?.name || (player.nearby==='game'?'작은 기억 게임':'');
+  const nearbyName=projects.find(p=>p.id===player.nearby)?.name || (player.nearby==='game'?'미니게임':'');
   function changeRoom(id){setView(id);if(id==='all')room.current.reset();else room.current.setRoom(id);}
   function padDown(e,x,z){e.preventDefault();e.currentTarget.setPointerCapture(e.pointerId);room.current.setDirection(x,z);}
   function padUp(){room.current?.setDirection(0,0);}
@@ -36,11 +65,11 @@ function App() {
       <div ref={host} className="room"/>
       <><div className="player-hud"><span className="live-dot"/><output aria-label="캐릭터 위치" data-player-x={player.x} data-player-z={player.z}>{currentRoom?.name}</output><span>· 검은 모자를 찾아보세요</span></div><div className="movement-pad" aria-label="캐릭터 이동"><button className="pad-up" aria-label="캐릭터 앞으로 이동" onPointerDown={e=>padDown(e,0,-1)} onPointerUp={padUp} onPointerCancel={padUp} onLostPointerCapture={padUp} onBlur={padUp}>↑</button><button className="pad-left" aria-label="캐릭터 왼쪽으로 이동" onPointerDown={e=>padDown(e,-1,0)} onPointerUp={padUp} onPointerCancel={padUp} onLostPointerCapture={padUp} onBlur={padUp}>←</button><button className="pad-down" aria-label="캐릭터 뒤로 이동" onPointerDown={e=>padDown(e,0,1)} onPointerUp={padUp} onPointerCancel={padUp} onLostPointerCapture={padUp} onBlur={padUp}>↓</button><button className="pad-right" aria-label="캐릭터 오른쪽으로 이동" onPointerDown={e=>padDown(e,1,0)} onPointerUp={padUp} onPointerCancel={padUp} onLostPointerCapture={padUp} onBlur={padUp}>→</button></div><button className="reset" onClick={()=>changeRoom('all')} aria-label="처음 시점으로 돌아가기">↺</button></>
       <div className="house-controls"><span><kbd>WASD</kbd> / <kbd>↑↓←→</kbd> 이동 <span className="desktop-hint">{failed?'· 가벼운 모드':'· 드래그 회전 · 스크롤 확대'}</span></span>{player.nearby?<button className="interact" onClick={()=>room.current.interact()}><kbd>E</kbd> {nearbyName} 열기 ↗</button>:<span className="nearby-hint">사물은 눌러서 바로 열 수도 있어요</span>}</div>
-      {hover&&<div className="room-hint">{(projects.find(p=>p.id===hover)?.name || '작은 기억 게임')+' · 눌러서 열기'}</div>}
+      {hover&&<div className="room-hint">{(projects.find(p=>p.id===hover)?.name || '미니게임')+' · 눌러서 열기'}</div>}
     </section>
-    <section className="collection" aria-labelledby="collection-title"><div className="collection-heading"><h2 id="collection-title">방 안의 프로젝트 <span>{String(projects.length).padStart(2,'0')}</span></h2><p>사물을 눌러도, 아래에서 골라도 좋아요.</p></div><div className="project-list">{projects.map((p,i)=><button key={p.id} onClick={()=>setSelected(p.id)} onMouseEnter={()=>setHover(p.id)} onMouseLeave={()=>setHover(null)} className="project" style={{'--accent':p.color}}><span className="project-number">0{i+1}</span><span><small>{p.category}</small><strong>{p.name}</strong><span className="project-subtitle">{p.subtitle}</span></span><span className="project-arrow">↗</span></button>)}<button className="project game-entry" onClick={()=>setSelected('game')}><span className="project-number">✳</span><span><small>JUST FOR FUN</small><strong>잠깐, 쉬어가기</strong><span className="project-subtitle">게임기 전원 켜기</span></span><span className="project-arrow">→</span></button></div></section>
+    <section className="collection" aria-labelledby="collection-title"><div className="collection-heading"><h2 id="collection-title">방 안의 프로젝트 <span>{String(projects.length).padStart(2,'0')}</span></h2><p>사물을 눌러도, 아래에서 골라도 좋아요.</p></div><div className="project-list">{projects.map((p,i)=><button key={p.id} onClick={()=>setSelected(p.id)} onMouseEnter={()=>setHover(p.id)} onMouseLeave={()=>setHover(null)} className="project" style={{'--accent':p.color}}><span className="project-number">0{i+1}</span><span><small>{p.category}</small><strong>{p.name}</strong><span className="project-subtitle">{p.subtitle}</span></span><span className="project-arrow">↗</span></button>)}<button className="project game-entry" onClick={()=>setSelected('game')}><span className="project-number">✳</span><span><small>JUST FOR FUN</small><strong>잠깐, 쉬어가기</strong><span className="project-subtitle">게임 콘솔 · 10가지 미니게임</span></span><span className="project-arrow">→</span></button></div></section>
     <footer><span>만들고, 다듬고, 다시 만들기.</span><span>© {new Date().getFullYear()} Ersione · 계속 자라는 작업실</span></footer>
-    <dialog ref={dialog} onCancel={()=>setSelected(null)} onClick={e=>{if(e.target===dialog.current)setSelected(null);}} onClose={()=>{if(!dialog.current?.open)setSelected(null);}}><button className="close" onClick={()=>setSelected(null)} aria-label="닫기">×</button>{selected==='game'?<MemoryGame/>:p&&<><p className="eyebrow" style={{color:p.color}}>{p.category}</p><h2>{p.name}</h2><p className="dialog-subtitle">{p.subtitle}</p><p>{p.description}</p><div className="dialog-actions"><a className="action" href={p.url} target="_blank" rel="noreferrer">프로젝트 둘러보기 ↗</a><a className="action secondary" href={p.repo} target="_blank" rel="noreferrer">소스 코드 ↗</a></div></>}</dialog>
+    <dialog ref={dialog} onCancel={()=>setSelected(null)} onClick={e=>{if(e.target===dialog.current)setSelected(null);}} onClose={()=>{if(!dialog.current?.open)setSelected(null);}}><button className="close" onClick={()=>setSelected(null)} aria-label="닫기">×</button>{selected==='game'?<Arcade/>:p&&<><p className="eyebrow" style={{color:p.color}}>{p.category}</p><h2>{p.name}</h2><p className="dialog-subtitle">{p.subtitle}</p><p>{p.description}</p><div className="dialog-actions"><a className="action" href={p.url} target="_blank" rel="noreferrer">프로젝트 둘러보기 ↗</a><a className="action secondary" href={p.repo} target="_blank" rel="noreferrer">소스 코드 ↗</a></div></>}</dialog>
   </main>;
 }
 createRoot(document.getElementById('root')).render(<App/>);

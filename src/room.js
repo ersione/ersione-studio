@@ -103,17 +103,32 @@ export function createRoom(host,projects,onSelect,onHover,onError,onStatus=()=>{
     interactionPoints.push({id:p.id,x:g.position.x,z:g.position.z});
   });
   const game=new THREE.Group();game.position.set(1.85,.75,3.5);game.userData.project='game';scene.add(game);
-  box(1.05,1.35,.8,0,0,0,mat('#c38368'),game);box(.84,.64,.08,0,.21,.44,dark,game);sign('PLAY',0,.25,.5,.67,.22,game,'#263e43','#d9ebc5');box(1,.13,.38,0,-.26,.4,wood,game);sphere(.06,-.24,-.16,.5,dark,game);sphere(.055,.25,-.17,.5,mat('#e9c389'),game);
+  // A living-room TV, console tower and controller on a low cabinet.
+  box(1.8,.46,.9,0,-.48,0,wood,game);box(1.64,.26,.04,0,-.47,.47,cream,game);
+  for(const x of [-.72,.72])box(.09,.16,.65,x,-.69,0,dark,game);
+  box(1.75,.98,.13,0,.38,-.12,dark,game);box(1.58,.81,.025,0,.39,-.04,mat('#304e52',{emissive:'#304e52',emissiveIntensity:.3}),game);
+  sign('PLAY',0,.46,-.018,1.12,.3,game,'#304e52','#dce8c9');sign('CHOOSE YOUR GAME',0,.19,-.016,1.28,.13,game,'#304e52','#b7cec0');
+  box(.12,.17,.12,0,-.18,-.12,dark,game);box(.55,.035,.3,0,-.26,-.1,dark,game);
+  box(.21,.46,.34,.64,-.03,.2,white,game);box(.055,.42,.35,.64,-.03,.21,dark,game);box(.01,.25,.015,.676,.01,.391,mat('#8fd6da',{emissive:'#8fd6da',emissiveIntensity:.7}),game);
+  const controller=new THREE.Group();controller.position.set(-.48,-.22,.25);game.add(controller);
+  const grip=sphere(.105,-.12,0,0,white,controller);grip.scale.set(.8,.42,1);const grip2=sphere(.105,.12,0,0,white,controller);grip2.scale.set(.8,.42,1);box(.24,.06,.13,0,.01,-.015,white,controller);
+  for(const x of [-.065,.065])sphere(.025,x,.05,.025,dark,controller);box(.065,.012,.02,-.12,.048,-.035,dark,controller);box(.02,.012,.065,-.12,.048,-.035,dark,controller);sphere(.018,.125,.05,-.035,mat('#c38368'),controller);
   targets.push(game);interactionPoints.push({id:'game',x:1.85,z:3.5});
-  // A little human character: plain black cap, dark trimmed beard, navy tee.
+  // Round, clean-shaven little character with rosy cheeks and a black cap.
   const player=new THREE.Group();player.visible=!new URLSearchParams(window.location.search).has('capture');scene.add(player);player.position.set(.5,0,1.7);
-  const skin=mat('#d9a27f'),navy=mat('#293f54'),black=mat('#252b30'),beard=mat('#58453b');
+  const skin=mat('#f1be9e'),navy=mat('#293f54'),black=mat('#252b30'),blush=mat('#ed9b91');
   const shadow=new THREE.Mesh(new THREE.CircleGeometry(.32,28),new THREE.MeshBasicMaterial({color:'#394b36',transparent:true,opacity:.18,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.09;player.add(shadow);
   const body=new THREE.Group();player.add(body);cylinder(.25,.29,.52,0,.81,0,navy,body);
-  const head=sphere(.245,0,1.3,0,skin,body);head.scale.set(.93,1.04,.9);
-  const facial=sphere(.206,0,1.22,.025,beard,body);facial.scale.set(.96,.55,1.02);sphere(.175,0,1.29,.09,skin,body);
-  for(const x of [-.08,.08])sphere(.019,x,1.34,.211,black,body);sphere(.035,0,1.28,.24,skin,body);
-  const cap=sphere(.25,0,1.43,-.005,black,body);cap.scale.set(1,.56,1);const brim=box(.41,.035,.24,0,1.43,.19,black,body);brim.rotation.x=.08;
+  const head=sphere(.31,0,1.3,0,skin,body);head.scale.set(1,.94,.92);
+  for(const x of [-.105,.105]){
+    const eye=sphere(.028,x,1.33,.264,black,body);eye.scale.y=1.18;
+    sphere(.009,x-.006,1.343,.288,white,body);
+    const cheek=sphere(.052,x*1.65,1.235,.238,blush,body);cheek.scale.set(1,.5,.22);
+    sphere(.055,Math.sign(x)*.3,1.29,0,skin,body);
+  }
+  sphere(.028,0,1.265,.287,skin,body);
+  const smile=new THREE.Mesh(new THREE.TorusGeometry(.044,.009,8,16,Math.PI),black);smile.rotation.z=Math.PI;smile.position.set(0,1.23,.272);body.add(smile);
+  const cap=sphere(.32,0,1.47,-.005,black,body);cap.scale.set(1,.5,.94);const brim=box(.44,.035,.19,0,1.46,.225,black,body);brim.rotation.x=.08;
   const limbs=[];
   for(const x of [-.15,.15]){const leg=new THREE.Group();leg.position.set(x,.56,0);body.add(leg);box(.16,.39,.17,0,-.2,0,mat('#667579'),leg);box(.18,.1,.28,0,-.43,.045,black,leg);limbs.push(leg);}
   for(const x of [-.32,.32]){const arm=new THREE.Group();arm.position.set(x,1.04,0);body.add(arm);cylinder(.085,.08,.17,0,-.08,0,navy,arm);cylinder(.065,.06,.27,0,-.29,0,skin,arm);limbs.push(arm);}

@@ -16,7 +16,7 @@ export const obstacles = [
   {id:'dex-stand',x:-6,z:-1.4,w:1.1,d:.8},
   {id:'sofa',x:-4.3,z:3.7,w:3.6,d:1.25},
   {id:'coffee-table',x:-4.1,z:1.85,w:1.65,d:.9},
-  {id:'arcade',x:1.85,z:3.5,w:1.05,d:.8},
+  {id:'arcade',x:1.85,z:3.5,w:1.8,d:.9},
   {id:'kitchen-counter',x:2.8,z:-4.35,w:6.4,d:1.1},
   {id:'fridge',x:6,z:-4.15,w:1.15,d:1.4},
   {id:'island',x:2.4,z:-2,w:2.8,d:1.2},
