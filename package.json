@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "test:browser": "playwright test",
     "test:unit": "node --test unit/*.test.mjs",
-    "update:images": "UPDATE_ASSETS=1 playwright test tests/assets.spec.js"
+    "update:images": "UPDATE_ASSETS=1 playwright test tests/assets.spec.js",
+    "test:seo": "playwright test --config playwright.seo.config.js"
   },
   "dependencies": {
     "react": "^19.2.0",
@@ -17,7 +18,8 @@
     "three": "^0.180.0"
   },
   "devDependencies": {
-    "vite": "^7.1.0",
-    "@playwright/test": "^1.56.0"
+    "@playwright/test": "^1.56.0",
+    "esbuild": "^0.28.2",
+    "vite": "^7.1.0"
   }
 }

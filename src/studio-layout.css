@@ -133,3 +133,15 @@ dialog .console-caption { margin-top: 6px; }
 .library-sound { justify-content: flex-end; margin: 0 36px 0 0; height: 0; position: relative; top: 6px; }
 .library-sound .game-sound { z-index: 1; }
 @media(max-width:699px) { .library-sound { height: auto; top: 0; margin-bottom: 6px; } }
+
+/* This is useful reading content as well as the crawler-visible portfolio. */
+.initial-house-preview { display:block; width:100%; height:100%; object-fit:contain; }
+.studio-about { border-top:1px solid #d4d7ca; padding:18px 0; color:#72816d; }
+.studio-about summary { cursor:pointer; font-size:12px; font-weight:600; }
+.studio-about-content { padding-top:14px; font-size:12px; line-height:1.9; }
+.studio-about-content > p { max-width:850px; }
+.project-descriptions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; margin:20px 0; }
+.project-descriptions h3 { font-size:14px; color:#3c594b; }
+.project-descriptions a { display:block; text-decoration:underline; text-underline-offset:3px; }
+.night .studio-about,.night .project-descriptions h3 { color:#c4cfbc; }
+@media(max-width:650px) { .project-descriptions { grid-template-columns:1fr; gap:8px; } .studio-about summary { font-size:11px; } }

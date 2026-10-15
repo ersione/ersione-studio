@@ -42,6 +42,7 @@ npm run test:unit
 npm run build
 npx playwright install chromium
 npm run test:browser
+npm run test:seo
 ```
 
 개발 주소는 `/`입니다. `npm run preview`는 빌드 산출물을 로컬에서 확인하는 용도입니다. 단위 검증은 출입구·경계·벽·가구 충돌을, 브라우저 검증은 사물 선택·게임·캐릭터 이동·모달 중 정지·모바일·가벼운 모드·OG 메타데이터를 확인합니다.
@@ -105,6 +106,18 @@ npm run update:images
 ```
 
 이 명령은 실제 3D 집을 렌더링해 `room-preview.png`·캐릭터 없는 `house-base.png`와 공유 카드를 갱신합니다. `scripts/og-card.html`은 공유 카드 레이아웃이며 이미지 갱신 후 결과를 육안으로 확인합니다. `?capture=house`는 배경 이미지 촬영 시 3D 캐릭터를 숨기는 캡처용 쿼리입니다. 메신저가 예전 링크 정보를 캐시했다면 반영이 늦을 수 있습니다.
+
+## 검색엔진 최적화
+
+빌드 마지막 단계의 `scripts/prerender.mjs`가 React 초기 화면을 정적 HTML로 렌더링합니다. JavaScript가 없어도 소개·프로젝트 설명·실제 서비스 링크·대표 집 이미지가 전달됩니다. 브라우저는 같은 React 컴포넌트를 hydrate하여 이동·게임 기능을 이어갑니다. `src/App.jsx`는 공통 화면, `src/main.jsx`는 브라우저 진입점입니다.
+
+- `작업실과 프로젝트 소개`는 방문자도 펼쳐 읽을 수 있는 본문이며 프로젝트 데이터와 링크를 재사용합니다.
+- `Person`, `WebSite`, `WebPage` JSON-LD로 Louis Kim·Ersione·개인 홈페이지/블로그/이력서/GitHub 관계를 설명합니다. 검색 결과의 특수 표시를 보장하지 않습니다.
+- 빌드 산출물에 `robots.txt`와 루트 URL 하나를 담은 `sitemap.xml`을 생성합니다. 방·모달·게임은 별도 페이지가 아니므로 임의의 URL을 만들지 않습니다. 가짜 lastmod 날짜도 넣지 않습니다.
+- OG·canonical·favicon은 기존 설정을 유지하며 구조화 데이터의 대표 이미지와 설명은 OG 메타데이터에서 가져옵니다.
+- `npm run test:seo`는 빌드 결과를 SPA fallback 없는 정적 검증 서버로 열어 초기 HTML·JavaScript 없는 화면·hydration 후 상호작용·사이트맵·404를 검증합니다. 먼저 `npm run build`가 필요합니다.
+
+Search Console에서 `https://studio.ersione.com/sitemap.xml` 제출 및 루트 URL 검사를 통해 Google 수집·색인을 별도로 확인해야 합니다. 공개 200 응답이나 사이트맵 생성만으로 검색 등록이 완료됐다고 보지 않습니다. 게임 검색 유입을 확장하려면 향후 충분한 설명과 실제 페이지를 갖춘 게임별 URL을 별도로 설계합니다.
 
 ## 배포
 
