@@ -74,6 +74,6 @@ test('touch movement stops on release',async({page})=>{
  await page.waitForTimeout(150);const stopped=await location.getAttribute('data-player-x');await page.waitForTimeout(200);expect(await location.getAttribute('data-player-x')).toBe(stopped);
 });
 test('social metadata and image are available without JavaScript',async({request})=>{
- const html=await (await request.get('/')).text();expect(html).toContain('property="og:title"');expect(html).toContain('property="og:image" content="https://studio.ersione.com/og-house-v2.png"');expect(html).toContain('name="twitter:card" content="summary_large_image"');
- const image=await request.get('/og-house-v2.png');expect(image.status()).toBe(200);const png=await image.body();expect(png.readUInt32BE(16)).toBe(1200);expect(png.readUInt32BE(20)).toBe(630);
+ const html=await (await request.get('/')).text();expect(html).toContain('property="og:title"');expect(html).toContain('property="og:image" content="https://studio.ersione.com/og-house-v3.png"');expect(html).toContain('name="twitter:card" content="summary_large_image"');
+ const image=await request.get('/og-house-v3.png');expect(image.status()).toBe(200);const png=await image.body();expect(png.readUInt32BE(16)).toBe(1200);expect(png.readUInt32BE(20)).toBe(630);
 });

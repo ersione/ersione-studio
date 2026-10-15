@@ -1,0 +1,128 @@
+/* Personal links and a wider, shorter console using the existing Studio palette. */
+.link-short { display: none; }
+.header-links { gap: 20px; }
+.header-links a { display: inline-flex; align-items: center; min-height: 44px; white-space: nowrap; }
+.intro-copy strong { color: #3b514a; font-weight: 600; }
+.night .intro-copy strong { color: #bac8b8; }
+.footer-credit { display: grid; gap: 5px; align-content: center; }
+.footer-links { flex-wrap: wrap; gap: 4px 18px; font-size: 11px; }
+.footer-links a { display: inline-flex; align-items: center; min-height: 44px; }
+
+dialog:has(.arcade) { width: 820px; max-width: calc(100vw - 16px); padding: 20px; }
+.arcade-hub { padding-top: 0; }
+.arcade-back { margin: 0 0 10px; min-height: 36px; }
+.game-pack { width: 160px; padding: 7px 10px 12px; }
+.game-pack strong { font-size: 20px; line-height: 1.1; }
+.game-pack > span:first-child { font-size: 8px; }
+.console-shell { padding: 12px; border-radius: 20px 20px 30px 20px; }
+.console-top { margin-bottom: 9px; }
+.console-screen { padding: 14px; border-width: 5px; }
+.console-screen .eyebrow { margin: 11px 0 6px; }
+.console-screen .arcade-library { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; margin: 12px 0; }
+.console-screen .arcade-card { min-height: 68px; padding: 9px; gap: 10px; }
+.console-screen .arcade-card:last-child { grid-column: 1 / -1; }
+.console-screen .arcade-cover { flex-basis: 36px; height: 40px; font-size: 18px; }
+.console-screen .arcade-card > span:nth-child(2) { min-width: 0; gap: 3px; }
+.console-screen .arcade-card small { line-height: 1.4; }
+.console-screen .arcade-card strong { line-height: 1.3; }
+.console-screen .arcade-card > span:nth-child(2) > span { line-height: 1.4; }
+.pack-pages { gap: 18px; margin: 10px 0; }
+.pack-pages button { min-height: 36px; }
+.console-bottom { height: 46px; padding: 7px 6px 0; }
+.console-dpad { transform: scale(.72); transform-origin: left center; }
+.console-buttons i { width: 26px; height: 26px; }
+dialog .console-caption { margin-top: 6px; }
+
+.arcade :is(.mini-game,.number-game,.block-game,.memory-game) > h2 { margin: 0; }
+.arcade :is(.mini-game,.number-game,.block-game,.memory-game) > p { margin: 8px 0; line-height: 1.6; }
+.arcade :is(.mini-game,.number-game,.block-game,.memory-game) > .eyebrow { margin: 0 0 6px; }
+.mini-actions .action,.block-actions .action,.number-game > .action,.memory-game > .action { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+.number-board { max-width: 320px; width: 100%; margin-inline: auto; }
+.mini-game :is(.soko-board,.mine-board,.mini-board-wrap) { max-width: 320px; width: 100%; margin-inline: auto; }
+.action-game .mini-board-wrap { max-width: 300px; }
+.number-controls button { min-height: 44px; }
+.memory-game .game-grid { margin-top: 14px; }
+
+@media (min-width: 900px) {
+  .console-screen .arcade-library { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .console-screen .arcade-card:last-child { grid-column: span 2; }
+}
+
+@media (min-width: 700px) {
+  .arcade :is(.mini-game,.number-game,.block-game,.memory-game) {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 250px;
+    grid-template-rows: repeat(8,min-content) 1fr;
+    gap: 8px 24px;
+    align-items: start;
+  }
+  .arcade :is(.mini-game,.number-game,.block-game,.memory-game) > :is(h2,p) { grid-column: 1 / -1; margin: 0; }
+  .number-game > .number-heading { grid-column: 1 / -1; margin: 0; }
+  .arcade :is(.mini-game,.number-game,.block-game,.memory-game) > .eyebrow { margin: 0; }
+  .number-heading { min-height: 44px; }
+  .number-heading > div { padding: 5px 14px; }
+  .mini-game :is(.mini-board-wrap,.mine-board,.soko-board),.number-board,.memory-game .game-grid { grid-column: 1; grid-row: 4 / 10; margin-block: 8px 0; }
+  .mini-stats { grid-column: 2; grid-row: 4; margin: 8px 0 0; flex-wrap: wrap; }
+  .mini-game > p[role="status"] { grid-column: 2; grid-row: 5; margin: 0; }
+  .mini-game > .mini-directions { grid-column: 2; grid-row: 6; margin: 0; }
+  .mini-game > p.block-help { grid-column: 2; grid-row: 7; }
+  .mini-game > .mini-actions { grid-column: 2; grid-row: 8; margin: 0; }
+  .racing-game .mini-board-wrap { max-width: 300px; }
+  .racing-game .mini-stats { margin: 8px 0 0; }
+  .race-progress { grid-column: 2; grid-row: 5; width: 100%; margin: 0; }
+  .racing-game > p[role="status"] { grid-row: 6; }
+  .racing-game > .mini-directions { grid-row: 7; }
+  .racing-game > p.block-help { grid-row: 8; }
+  .racing-game > .mini-actions { grid-row: 9; }
+  .number-game > p[role="status"] { grid-column: 2; grid-row: 4; margin-top: 8px; }
+  .number-controls { grid-column: 2; grid-row: 5; }
+  .number-game > p.block-help { grid-column: 2; grid-row: 6; }
+  .number-game > .action { grid-column: 2; grid-row: 7; justify-self: start; }
+  .block-layout { grid-column: 1; grid-row: 4 / 10; grid-template-columns: minmax(0,220px) minmax(66px,1fr); gap: 14px; margin: 8px 0 0; }
+  .block-sidebar { gap: 18px; }
+  .block-game > p.block-status { grid-column: 2; grid-row: 4; margin: 8px 0 0; }
+  .block-controls { grid-column: 2; grid-row: 5; }
+  .block-game > p.block-help { grid-column: 2; grid-row: 6; }
+  .block-actions { grid-column: 2; grid-row: 7; flex-wrap: wrap; }
+  .memory-game > p[aria-live] { grid-column: 2; grid-row: 4; margin-top: 8px; }
+  .memory-game > .action { grid-column: 2; grid-row: 5; justify-self: start; }
+}
+
+@media (max-width: 699px) {
+  dialog:has(.arcade) { padding: 16px 12px; }
+  .game-pack { padding-top: 7px; padding-bottom: 12px; }
+  .console-screen { padding: 10px; border-width: 4px; }
+  .console-screen .arcade-card { padding: 7px; gap: 6px; min-height: 62px; }
+  .console-screen .arcade-cover { flex-basis: 24px; height: 28px; font-size: 14px; }
+  .console-screen .arcade-card strong { font-size: 13px; }
+  .console-screen .arcade-play { display: none; }
+  .console-screen .arcade-card small { font-size: 8px; overflow-wrap: anywhere; }
+  .console-screen h2 { font-size: 17px; }
+  .screen-top,.screen-bottom { font-size: 8px; flex-wrap: wrap; }
+  .pack-pages button { min-height: 44px; }
+  .console-bottom { height: 42px; }
+  dialog .console-caption { display: none; }
+  .arcade-back { min-height: 36px; margin-bottom: 6px; }
+  .arcade :is(.mini-game,.number-game,.block-game,.memory-game) > .eyebrow { font-size: 9px; margin-bottom: 4px; }
+  .arcade :is(.mini-game,.number-game,.block-game,.memory-game) > h2 { font-size: 24px; line-height: 1.25; }
+  .arcade :is(.mini-game,.number-game,.block-game,.memory-game) > p { font-size: 12px; margin: 7px 0; }
+  .mini-stats,.racing-game .mini-stats { margin: 10px 0; padding: 10px; }
+  .mini-game .mini-board-wrap { max-width: 300px; }
+  .action-game .mini-board-wrap { max-width: 244px; }
+  .mini-directions { margin: 8px 0; }
+  .mini-actions { margin-top: 8px; gap: 6px; }
+  .mini-actions .action,.block-actions .action { padding: 9px 12px; }
+  .race-progress { margin: 0 auto 10px; }
+  .block-layout { grid-template-columns: minmax(0,170px) minmax(66px,1fr); gap: 12px; margin-top: 12px; }
+  .block-sidebar { gap: 14px; padding-top: 4px; }
+  .block-sidebar strong { font-size: 19px; }
+  .block-next { width: 64px; height: 64px; }
+  .memory-game .game-grid button { height: 64px; }
+  .number-heading > div { padding: 6px 12px; }
+}
+@media (max-width: 540px) {
+  .header-links { gap: 12px; font-size: 12px; }
+  .header-links .desktop-shortcut,.link-full { display: none; }
+  .link-short { display: inline; }
+  .footer-links { gap: 4px 16px; }
+}

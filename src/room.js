@@ -64,7 +64,7 @@ export function createRoom(host,projects,onSelect,onHover,onError,onStatus=()=>{
   box(1.1,.12,.8,-6,.62,-1.4,wood);box(.85,.55,.6,-6,.28,-1.4,cream);
   box(1.35,.1,.4,-1.9,1.06,-4.6,wood);for(let i=0;i<5;i++)box(.14,.45+i%2*.12,.3,-2.4+i*.19,1.34,-4.6,mat(['#739183','#9e7b91','#d4b68b'][i%3]));
   const avatarTexture=new THREE.TextureLoader().load(import.meta.env.BASE_URL+'avatar.png',()=>{if(!disposed)dirty=true;});avatarTexture.colorSpace=THREE.SRGBColorSpace;textures.push(avatarTexture);
-  box(.95,1.1,.07,-1.9,2.35,-4.85,dark);const portrait=new THREE.Mesh(new THREE.PlaneGeometry(.83,.94),new THREE.MeshBasicMaterial({map:avatarTexture}));portrait.position.set(-1.9,2.35,-4.8);scene.add(portrait);
+  box(.95,.95,.07,-1.9,2.35,-4.85,dark);const portrait=new THREE.Mesh(new THREE.PlaneGeometry(.83,.83),new THREE.MeshBasicMaterial({map:avatarTexture}));portrait.position.set(-1.9,2.35,-4.8);scene.add(portrait);
   const rug=box(3.9,.025,3.3,-3.6,.07,2.4,mat('#b8c8b0'));for(let i=0;i<6;i++)box(3.7,.004,.02,-3.6,.085,1+i*.5,mat('#a4b99c'));
   // Sofa and coffee table in the living room.
   box(3.6,.45,1.25,-4.3,.4,3.7,mat('#8da68e'));box(3.6,.7,.25,-4.3,.94,4.2,mat('#78967e'));
@@ -141,7 +141,7 @@ export function createRoom(host,projects,onSelect,onHover,onError,onStatus=()=>{
   const limbs=[];
   for(const x of [-.15,.15]){const leg=new THREE.Group();leg.position.set(x,.56,0);body.add(leg);box(.16,.39,.17,0,-.2,0,mat('#667579'),leg);box(.18,.1,.28,0,-.43,.045,black,leg);limbs.push(leg);}
   for(const x of [-.32,.32]){const arm=new THREE.Group();arm.position.set(x,1.04,0);body.add(arm);cylinder(.085,.08,.17,0,-.08,0,navy,arm);cylinder(.065,.06,.27,0,-.29,0,skin,arm);limbs.push(arm);}
-  const nameplate=sign('ERSIONE',0,1.83,0,.8,.17,player,'#f6f3e9','#344e45');
+  const nameplate=sign('LOUIS KIM',0,1.83,0,.8,.17,player,'#f6f3e9','#344e45');
   let position={x:.5,z:1.7},keys=new Set(),pad={x:0,z:0},nearby=null,lastStatus='',lastTime=performance.now(),walk=0;
   const status=()=>{const point=interactionPoints.map(p=>({...p,d:Math.hypot(p.x-position.x,p.z-position.z)})).sort((a,b)=>a.d-b.d)[0];nearby=point&&point.d<2?point.id:null;
     const payload={room:roomAt(position.x,position.z),x:Number(position.x.toFixed(2)),z:Number(position.z.toFixed(2)),nearby};const key=JSON.stringify(payload);if(key!==lastStatus){lastStatus=key;onStatus(payload);}};
