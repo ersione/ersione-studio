@@ -24,6 +24,8 @@ for(const width of [320,390,1280])test(`console layout keeps all twelve boards a
   }
   const action=dialog.locator('.mini-actions button,.block-actions button,.number-controls button');
   for(const button of await action.all())expect((await button.boundingBox()).height).toBeGreaterThanOrEqual(43);
+  const effect=dialog.locator('.game-sound'),closeGame=await dialog.getByRole('button',{name:'닫기',exact:true}).boundingBox();
+  expect(await effect.evaluate(el=>Boolean(el.closest('.mini-actions,.block-actions')))).toBe(true);const effectRect=await effect.boundingBox();expect(effectRect.y).toBeGreaterThan(closeGame.y+closeGame.height);
   const back=dialog.getByRole('button',{name:'← 게임 목록',exact:true});await back.scrollIntoViewIfNeeded();await back.click();
  }
 });

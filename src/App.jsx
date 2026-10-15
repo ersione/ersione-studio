@@ -21,7 +21,7 @@ function MemoryGame() {
   useGameFeedback({won:matched.length===8});
   useEffect(()=>{if(open.length!==2)return;playSound(cards[open[0]]===cards[open[1]]?'hit':'miss');const [a,b]=open;const timer=setTimeout(()=>{if(cards[a]===cards[b])setMatched(m=>[...m,a,b]);setOpen([]);},650);return()=>clearTimeout(timer);},[open,cards]);
   const restart=()=>{playSound('start');setCards(shuffle());setOpen([]);setMatched([]);setMoves(0);};
-  return <section className="memory-game"><p className="eyebrow">A LITTLE BREAK / 01</p><h2>작은 기억 게임</h2><p>같은 모양의 카드를 찾아보세요.</p><div className="game-grid">{cards.map((s,i)=><button key={i} className={matched.includes(i)?'matched':''} aria-label={open.includes(i)||matched.includes(i)?`카드 ${i+1}: ${s}`:`카드 ${i+1} 뒤집기`} disabled={matched.includes(i)||open.includes(i)||open.length===2} onClick={()=>{playSound('move');setOpen(o=>[...o,i]);if(open.length===1)setMoves(m=>m+1);}}>{open.includes(i)||matched.includes(i)?s:'?'}</button>)}</div><p aria-live="polite">{matched.length===8?'모두 찾았어요! 잠깐의 휴식 완료.':`${moves}번 시도 · ${matched.length/2}/4쌍`}</p><button className="action secondary" onClick={restart}>다시 하기 ↻</button></section>;
+  return <section className="memory-game"><p className="eyebrow">A LITTLE BREAK / 01</p><h2>작은 기억 게임</h2><p>같은 모양의 카드를 찾아보세요.</p><div className="game-grid">{cards.map((s,i)=><button key={i} className={matched.includes(i)?'matched':''} aria-label={open.includes(i)||matched.includes(i)?`카드 ${i+1}: ${s}`:`카드 ${i+1} 뒤집기`} disabled={matched.includes(i)||open.includes(i)||open.length===2} onClick={()=>{playSound('move');setOpen(o=>[...o,i]);if(open.length===1)setMoves(m=>m+1);}}>{open.includes(i)||matched.includes(i)?s:'?'}</button>)}</div><p aria-live="polite">{matched.length===8?'모두 찾았어요! 잠깐의 휴식 완료.':`${moves}번 시도 · ${matched.length/2}/4쌍`}</p><div className="mini-actions memory-actions"><button className="action secondary" onClick={restart}>다시 하기 ↻</button><SoundToggle/></div></section>;
 }
 function Arcade(){return <GameAudioProvider><ArcadeContent/></GameAudioProvider>;}
 function ArcadeContent() {
@@ -36,8 +36,7 @@ function ArcadeContent() {
     e.preventDefault();const buttons=[...content.current.querySelectorAll('.arcade-card')],index=buttons.indexOf(document.activeElement);
     const next=index<0?(e.key==='ArrowDown'?0:buttons.length-1):(index+(e.key==='ArrowDown'?1:-1)+buttons.length)%buttons.length;buttons[next]?.focus();
   }
-  return <div className={game?'arcade':'arcade arcade-hub'} ref={content} tabIndex={-1}>{game?<><div className="arcade-toolbar"><button className="arcade-back" onClick={()=>{stopSound();setGame(null);}}>← 게임 목록</button><SoundToggle/></div>{game==='memory'?<MemoryGame/>:game==='blocks'?<BlockGame/>:game==='mines'?<MinesGame/>:game==='soko'?<SokoGame/>:game==='moles'?<MoleGame/>:<ActionGame key={game} kind={game}/>}</>:<>
-    <div className="arcade-toolbar library-sound"><SoundToggle/></div>
+  return <div className={game?'arcade':'arcade arcade-hub'} ref={content} tabIndex={-1}>{game?<><div className="arcade-toolbar"><button className="arcade-back" onClick={()=>{stopSound();setGame(null);}}>← 게임 목록</button></div>{game==='memory'?<MemoryGame/>:game==='blocks'?<BlockGame/>:game==='mines'?<MinesGame/>:game==='soko'?<SokoGame/>:game==='moles'?<MoleGame/>:<ActionGame key={game} kind={game}/>}</>:<>
     <div className="game-pack" aria-label="12가지 게임이 담긴 멀티게임팩"><span>MULTI GAME PACK</span><strong>12 <i>IN</i> 1</strong><span className="pack-grip"/></div>
     <div className="console-shell"><div className="console-top"><span><span className="console-led"/> POWER ON</span><span>e / pocket</span></div>
       <div className="console-screen"><div className="screen-top"><span>◆ PACK LOADED</span><span>12 GAMES</span></div><p className="eyebrow">ERSIONE GAME COLLECTION</p><h2>오늘은 무슨 게임 할까요?</h2><p className="screen-instruction">게임을 골라 START!</p>
@@ -45,7 +44,7 @@ function ArcadeContent() {
         <div className="pack-pages"><button aria-label="이전 게임 목록" disabled={page===0} onClick={()=>setPage(p=>p-1)}>◀</button><span>{page+1} / {pages} PAGE</span><button aria-label="다음 게임 목록" disabled={page===pages-1} onClick={()=>setPage(p=>p+1)}>▶</button></div><div className="screen-bottom"><span>↑ ↓ SELECT · ← → PAGE</span><span>ENTER / TOUCH ▶</span></div>
       </div>
       <div className="console-bottom" aria-hidden="true"><span className="console-dpad"><i/><i/></span><div className="console-speaker"><i/><i/><i/></div><span className="console-buttons"><i>B</i><i>A</i></span></div>
-      <p className="console-caption">팩 하나에 담은 열두 가지 작은 즐거움</p>
+      <p className="console-caption">팩 하나에 담은 열두 가지 작은 즐거움</p><div className="library-sound"><SoundToggle/></div>
     </div>
   </>}</div>;
 }

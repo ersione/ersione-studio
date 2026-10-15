@@ -40,3 +40,15 @@ for(const width of [320,390])test(`blocks fit and touch controls work at ${width
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.screenshot({path:`test-results/blocks-${width}.png`});
 });
+
+test('cascade falls over time, blocks moves, pauses mid-fall, and resumes before spawning',async({page})=>{
+ await page.addInitScript(()=>{Math.random=()=>0;});await page.goto('/');await page.clock.install();await page.clock.pauseAt(new Date(Date.now()+1000));
+ await page.getByRole('button',{name:/잠깐, 쉬어가기/}).click();await page.getByRole('button',{name:/캐스케이드 블록 퍼즐/}).click();await page.getByRole('button',{name:'게임 시작',exact:true}).click();
+ const board=page.locator('.block-board');
+ for(const column of [8,9]){await board.press('ArrowUp');for(let i=0;i<column-3;i++)await board.press('ArrowRight');await board.press('Space');}
+ for(let i=0;i<3;i++)await board.press('ArrowLeft');await board.press('Space');
+ await board.press('ArrowRight');await board.press('Space');
+ await expect(board).toHaveAttribute('data-cascade-chain','1');await expect(board).toHaveAttribute('data-lines','1');await expect(page.getByRole('button',{name:'블록 왼쪽 이동',exact:true})).toBeDisabled();
+ await page.locator('.block-actions').getByRole('button',{name:'일시정지',exact:true}).click();const frozen=await board.innerHTML();await page.clock.runFor(1000);expect(await board.innerHTML()).toBe(frozen);
+ await page.locator('.block-actions').getByRole('button',{name:'계속하기',exact:true}).click();await page.clock.runFor(1000);await expect(board).toHaveAttribute('data-cascade-chain','0');await expect(page.getByRole('button',{name:'블록 왼쪽 이동',exact:true})).toBeEnabled();
+});

@@ -1,5 +1,5 @@
 export const games=[
-  {id:'blocks',icon:'▦',name:'블록 쌓기',tag:'떨어지는 블록 퍼즐',description:'돌리고 쌓아 한 줄 완성!',color:'#dbe5cf'},
+  {id:'blocks',icon:'▦',name:'블록 쌓기',tag:'캐스케이드 블록 퍼즐',description:'줄을 지우고 연쇄를 만들어요!',color:'#dbe5cf'},
   {id:'rhythm',icon:'♫',name:'리듬 탭',tag:'타이밍에 맞춰 톡',description:'세 줄의 리듬을 이어가요.',color:'#f1dfbd'},
   {id:'memory',icon:'◈',name:'카드 맞추기',tag:'두뇌 스트레칭',description:'숨은 같은 모양 찾기.',color:'#dfdcec'},
   {id:'snake',icon:'▰',name:'스네이크',tag:'꼬리가 자라는 모험',description:'사과를 먹고 길어져요.',color:'#c8dfaa'},

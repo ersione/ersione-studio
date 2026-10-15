@@ -41,3 +41,38 @@ test('blocked spawn ends the game and further inputs cannot change it',()=>{
   const next=lockPiece(state);
   assert.equal(next.over,true);assert.equal(step(next,'drop'),next);
 });
+
+function finishCascade(state){let next=state;for(let i=0;next.cascade&&i<400;i++)next=step(next,'tick');assert.equal(next.cascade,null);return next;}
+test('a clear makes unsupported fragments fall and causes a scored second chain',()=>{
+ const state={...newGame(),piece:{type:0,shape:[[1]],x:9,y:HEIGHT-1}};
+ state.board[HEIGHT-1].fill(2,0,9);
+ for(let x=0;x<5;x++)state.board[HEIGHT-3][x]=3;
+ for(let x=5;x<10;x++)state.board[HEIGHT-4][x]=4;
+ const clearing=lockPiece(state);assert.equal(clearing.lines,1);assert.equal(clearing.cascade.chain,1);
+ assert.equal(step(clearing,'left'),clearing);assert.equal(step(clearing,'drop'),clearing);
+ const next=finishCascade(clearing);assert.equal(next.lines,2);assert.equal(next.lastChain,2);assert.equal(next.score,300);
+ assert.ok(next.board.every(row=>row.every(v=>!v)));assert.equal(next.over,false);assert.equal(state.board[HEIGHT-3][0],3);
+});
+test('same-piece fragments stay connected, while separate same-color pieces fall independently',()=>{
+ const state={...newGame(),cascade:{chain:1}};
+ state.board[HEIGHT-1][0]=2;state.groups[HEIGHT-1][0]=1;
+ state.board[HEIGHT-2][0]=4;state.groups[HEIGHT-2][0]=2;
+ state.board[HEIGHT-2][1]=4;state.groups[HEIGHT-2][1]=3;
+ state.board[HEIGHT-4][3]=5;state.groups[HEIGHT-4][3]=4;
+ state.board[HEIGHT-4][4]=5;state.groups[HEIGHT-4][4]=4;
+ const next=finishCascade(state);assert.equal(next.board[HEIGHT-2][0],4);assert.equal(next.board[HEIGHT-1][1],4);
+ assert.equal(next.board[HEIGHT-1][3],5);assert.equal(next.board[HEIGHT-1][4],5);
+});
+test('a connected fragment can bridge a gap, but a severed fragment falls',()=>{
+ const state={...newGame(),cascade:{chain:1}};
+ state.board[HEIGHT-1][0]=2;state.groups[HEIGHT-1][0]=1;
+ for(const x of [0,1]){state.board[HEIGHT-2][x]=4;state.groups[HEIGHT-2][x]=2;}
+ state.board[HEIGHT-4][7]=4;state.groups[HEIGHT-4][7]=2;
+ const next=finishCascade(state);assert.equal(next.board[HEIGHT-2][1],4);assert.equal(next.board[HEIGHT-1][1],0);assert.equal(next.board[HEIGHT-1][7],4);
+});
+test('large cascade line clears award a finite score and spawn only after settling',()=>{
+ const state={...newGame(),piece:{type:0,shape:[[1]],x:0,y:HEIGHT-6},next:1};
+ for(let y=HEIGHT-5;y<HEIGHT;y++)state.board[y].fill(2);
+ const clearing=lockPiece(state);assert.equal(clearing.lines,5);assert.equal(clearing.score,1200);assert.ok(clearing.cascade);
+ const next=finishCascade(clearing);assert.equal(next.piece.type,1);assert.ok(Number.isFinite(next.score));assert.ok(fits(next.board,next.piece));
+});

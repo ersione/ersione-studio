@@ -2,7 +2,7 @@ import React,{useEffect,useRef,useState} from 'react';
 import {newAction,actionInput,tickAction} from './action-games';
 import {drawAction} from './action-draw';
 import {directionKey,useAutoPause} from './game-hooks';
-import {useGameSound,useGameFeedback} from './game-audio';
+import {SoundToggle,useGameSound,useGameFeedback} from './game-audio';
 
 const DETAILS={
   pong:{name:'포켓 퐁',tag:'11',copy:'상대보다 먼저 7점! 각도를 바꿔 공을 보내요.',help:'← → / A D · 버튼 길게 누르기 · 게임판 드래그',end:'7점 먼저 달성! 멋진 승리예요.'},
@@ -51,6 +51,6 @@ export default function ActionGame({kind}){
       {(!started||paused||ended)&&<div className="mini-overlay"><strong>{ended?hud.status==='won'?detail.end:'다시 도전해볼까요?':!started?'작은 모험을 시작해요':'잠깐 쉬는 중'}</strong><span>{ended?`${hud.score}점 · ${kind==='racer'?`${Math.floor(hud.time)}초 주행`:`레벨 ${hud.level}`}`:!started?detail.copy:'준비되면 이어서 해요.'}</span><button className="action" onClick={ended||!started?start:()=>{setPaused(false);canvas.current?.focus();}}>{ended?'다시 시작':!started?'게임 시작':'계속하기'}</button></div>}
     </div><p role="status">{ended?hud.status==='won'?'클리어!':'게임 종료':!started?'시작 버튼을 눌러주세요':paused?'일시정지':kind==='racer'&&hud.invincible>0?`접촉! 남은 기회 ${hud.lives}번 · 차선을 바꿔요`:`${hud.score}점 · 플레이 중`}</p>
     <div className="mini-directions" style={{gridTemplateColumns:`repeat(${directions.length},1fr)`}}>{directions.map(direction=><button key={direction} disabled={!active} aria-label={`${detail.name} ${names[direction]}${['flappy','rhythm'].includes(kind)?'':' 이동'}`} onClick={e=>{if(!continuous)move(direction);else if(e.detail===0){delete input.current.targetX;const key=kind==='shooter'?'x':'paddle';state.current[key]=Math.max(36,Math.min(284,state.current[key]+(direction==='left'?-20:20)));}}} onPointerDown={e=>{if(!continuous)return;e.preventDefault();e.currentTarget.setPointerCapture(e.pointerId);delete input.current.targetX;input.current[direction]=true;}} onPointerUp={()=>release(direction)} onPointerCancel={()=>release(direction)} onLostPointerCapture={()=>release(direction)} onBlur={()=>{input.current[direction]=false;}}>{icons[direction]}</button>)}</div>
-    <p className="block-help">{detail.help} · P 일시정지</p><div className="mini-actions"><button className="action secondary" disabled={!started||ended} onClick={()=>{setPaused(p=>!p);canvas.current?.focus();}}>{paused?'계속하기':'일시정지'}</button><button className="action secondary" onClick={start}>처음부터 ↻</button></div>
+    <p className="block-help">{detail.help} · P 일시정지</p><div className="mini-actions"><button className="action secondary" disabled={!started||ended} onClick={()=>{setPaused(p=>!p);canvas.current?.focus();}}>{paused?'계속하기':'일시정지'}</button><button className="action secondary" onClick={start}>처음부터 ↻</button><SoundToggle/></div>
   </section>;
 }
