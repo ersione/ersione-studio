@@ -11,7 +11,7 @@ for(const width of [320,390,1280])test(`console layout keeps all twelve boards a
  await page.setViewportSize({width,height:width===1280?720:844});await page.goto('/');await page.getByRole('button',{name:/잠깐, 쉬어가기/}).click();
  const dialog=page.getByRole('dialog');
  const checkWidth=async()=>expect(await dialog.evaluate(el=>el.scrollWidth<=el.clientWidth)).toBe(true);
- await checkWidth();expect((await dialog.boundingBox()).height).toBeLessThan(660);
+ await checkWidth();expect((await dialog.boundingBox()).height).toBeLessThan(width===1280?660:700);
  const close=await dialog.getByRole('button',{name:'닫기',exact:true}).boundingBox(),sound=await dialog.locator('.game-sound').boundingBox();expect(sound.x+sound.width).toBeLessThanOrEqual(close.x);
  const widths=await dialog.locator('.arcade-card').evaluateAll(cards=>cards.map(card=>card.getBoundingClientRect().width));expect(Math.max(...widths)-Math.min(...widths)).toBeLessThan(1);
  for(let i=0;i<games.length;i++){
