@@ -1,3 +1,4 @@
+import '@ersione/design-system/styles.css';
 import React from 'react';
 import {createRoot,hydrateRoot} from 'react-dom/client';
 import App from './App';

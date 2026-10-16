@@ -13,6 +13,7 @@
     "test:seo": "playwright test --config playwright.seo.config.js"
   },
   "dependencies": {
+    "@ersione/design-system": "git+https://github.com/ersione/ersione-design-system.git#85b727591db4daa490138d8ae017f006f589a53a",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "three": "^0.180.0"

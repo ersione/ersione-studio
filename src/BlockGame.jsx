@@ -1,3 +1,4 @@
+import {Button} from '@ersione/design-system/react';
 import React,{useEffect,useRef,useState} from 'react';
 import {SoundToggle,useGameSound,useGameFeedback} from './game-audio';
 import {COLORS,SHAPES,newGame,step,landing} from './block-game';
@@ -39,12 +40,12 @@ export default function BlockGame(){
     <div className="block-layout">
       <div className="block-board-wrap"><div className="block-board" ref={boardRef} tabIndex={0} role="img" aria-label="블록 게임판. 방향키로 이동과 회전, 스페이스로 바로 내리기, P로 일시정지." data-score={game.score} data-lines={game.lines} data-cascade-chain={game.cascade?.chain||0}>
         {cells.flat().map((cell,i)=><span key={i} className={`block-cell${cell.value?' filled':''}${cell.ghost?' ghost':''}`} style={cell.value?{'--block':COLORS[cell.value-1]}:undefined}/>)}
-      </div>{(!started||paused||game.over)&&<div className="block-overlay"><strong>{game.over?'다시 쌓아볼까요?':!started?'작은 블록, 작은 휴식':'잠깐 쉬는 중'}</strong><span>{game.over?`${game.score}점 · ${game.lines}줄 완성`:!started?'빈틈없이 한 줄을 채워보세요.':'준비되면 이어서 해요.'}</span><button className="action" onClick={game.over||!started?restart:()=>{setPaused(false);boardRef.current?.focus();}}>{game.over?'다시 시작':!started?'게임 시작':'계속하기'}</button></div>}</div>
+      </div>{(!started||paused||game.over)&&<div className="block-overlay"><strong>{game.over?'다시 쌓아볼까요?':!started?'작은 블록, 작은 휴식':'잠깐 쉬는 중'}</strong><span>{game.over?`${game.score}점 · ${game.lines}줄 완성`:!started?'빈틈없이 한 줄을 채워보세요.':'준비되면 이어서 해요.'}</span><Button variant="primary" size="sm" className="action" onClick={game.over||!started?restart:()=>{setPaused(false);boardRef.current?.focus();}}>{game.over?'다시 시작':!started?'게임 시작':'계속하기'}</Button></div>}</div>
       <aside className="block-sidebar"><div><small>점수</small><strong>{game.score.toLocaleString()}</strong></div><div><small>완성한 줄</small><strong>{game.lines}</strong></div><div><small>레벨</small><strong>{level}</strong></div><div><small>다음 블록</small><div className="block-next" aria-label="다음 블록 미리보기">{Array.from({length:16},(_,i)=>{const filled=SHAPES[game.next][Math.floor(i/4)]?.[i%4];return <span key={i} className={filled?'block-cell filled':'block-cell'} style={filled?{'--block':COLORS[game.next]}:undefined}/>;})}</div></div></aside>
     </div>
     <p className="block-status" role="status">{game.over?'게임 종료':!started?'시작 버튼을 눌러주세요':paused?'일시정지':game.cascade?`${game.cascade.chain}연쇄 · 조각이 내려오는 중`:game.lastChain>1?`${game.lastChain}연쇄! · ${game.lines}줄 완성 · 레벨 ${level}`:`${game.lines}줄 완성 · 레벨 ${level}`}</p>
     <div className="block-controls" aria-label="블록 조작">{[['left','←','블록 왼쪽 이동'],['rotate','↻','블록 회전'],['right','→','블록 오른쪽 이동'],['down','↓','블록 한 칸 내리기'],['drop','⤓','블록 바로 내리기']].map(([action,label,name])=><button key={action} aria-label={name} disabled={!controllable} onClick={()=>play(action)}>{label}</button>)}</div>
     <p className="block-help">← → 이동 · ↑ 회전 · ↓ 내리기<br/>Space 바로 내리기 · P 일시정지</p>
-    <div className="block-actions"><button className="action secondary" disabled={!started||game.over} onClick={()=>setPaused(p=>!p)}>{paused?'계속하기':'일시정지'}</button><button className="action secondary" onClick={restart}>처음부터 ↻</button><SoundToggle/></div>
+    <div className="block-actions"><Button variant="secondary" size="sm" className="action secondary" disabled={!started||game.over} onClick={()=>setPaused(p=>!p)}>{paused?'계속하기':'일시정지'}</Button><Button variant="secondary" size="sm" className="action secondary" onClick={restart}>처음부터 ↻</Button><SoundToggle/></div>
   </section>;
 }

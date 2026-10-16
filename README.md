@@ -1,6 +1,6 @@
 # Ersione’s Studio
 
-만들고, 쉬고, 다시 상상하는 집. Louis Kim이 만드는 작은 작업실, Ersione’s Studio입니다. 사람 이름은 Louis Kim, 온라인·프로젝트 브랜드는 Ersione으로 구분합니다. 홈페이지·블로그·이력서·GitHub 링크를 헤더와 푸터에 제공하며 모바일에서는 네 링크를 푸터에 모두 표시합니다.
+만들고, 쉬고, 다시 상상하는 집. Louis Kim이 만드는 작은 작업실, Ersione’s Studio입니다. 사람 이름은 Louis Kim, 온라인·프로젝트 브랜드는 Ersione으로 구분합니다. 개인 작업실/플레이그라운드로 운영하며 집·캐릭터·12게임을 유지합니다. 공통 메뉴는 Main·Studio·Resume·Blog이고 모바일에서도 네 링크를 모두 표시합니다. Main은 서비스·최근 글·GitHub 소식 허브, Resume는 이력서·업무 포트폴리오를 맡습니다. GitHub 프로필 링크는 푸터에 유지합니다.
 
 **[집 둘러보기](https://studio.ersione.com/)**
 
@@ -130,3 +130,11 @@ Search Console에서 `https://studio.ersione.com/sitemap.xml` 제출 및 루트 
 3D 사물과 캐릭터는 코드로 구성했고, 프로필 액자는 GitHub `ersione`의 프로필 사진을 정사각형 비율로 표시합니다. `public/avatar.png`는 2026-10-16 확인한 공개 프로필 사진의 로컬 사본입니다. 멀티플레이·저장되는 집 꾸미기는 아직 포함하지 않았습니다.
 
 줌은 OrbitControls의 change 이벤트로 즉시 다시 그려 휠·트랙패드·두 손가락 핀치 도중에도 화면이 갱신됩니다. 파비콘 `public/icon.png`는 ersione.com의 동일한 아이콘입니다.
+
+## UI 패키지와 작업실 조명
+
+Ersione Design System v0.5.1(`85b727591db4daa490138d8ae017f006f589a53a`)을 Git HTTPS SHA로 고정 설치합니다. 공유 CSS를 복사하지 않고 패키지 `styles.css`와 React Button/Select/Badge/Navigation을 사용합니다. `src/studio-theme.css`는 토큰을 소비하는 Studio 전용 조합 스타일입니다. Noto Sans KR과 기존 제목·레트로 게임기·3D 집의 예술적 색감은 유지합니다.
+
+조명은 기본 **자동**, 방문자 기기의 현지 시간 **07:00 이상 19:00 미만은 낮**, 그 밖에는 밤입니다. 위치 권한이나 IP 추정은 사용하지 않습니다. `src/lighting.js`가 순수 시간 분류, `src/use-lighting.js`가 선택·저장·시각 갱신을 담당합니다. 낮/밤 수동 선택과 자동 복귀를 `studio-lighting-mode`에 저장하며 분 경계·탭 복귀·창 포커스·다른 탭의 설정 변경을 반영합니다. 3D와 경량모드는 같은 결과를 받아 기존 조명/오버레이로 표현합니다. 초기 정적 HTML은 낮으로 렌더링하고 hydration 이후 방문자 시간과 저장값을 적용합니다.
+
+UI 변경은 `main`에 커밋·푸시한 뒤 위 배포 워크플로의 검증과 Pages 배포가 성공하면 운영에 반영됩니다.

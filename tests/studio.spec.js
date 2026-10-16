@@ -54,13 +54,15 @@ test('room objects can be selected directly',async({page})=>{
  }
 });
 
-test('character walks, interacts nearby, and pauses inside a dialog',async({page})=>{
- await page.goto('/');await page.getByRole('button',{name:'작업방으로 이동',exact:true}).click();
+for(const mode of ['day','night'])test(`character walks, interacts nearby, and pauses inside a dialog (${mode})`,async({page})=>{
+ await page.goto('/');await page.getByLabel('작업실 조명',{exact:true}).selectOption(mode);await page.getByRole('button',{name:'작업방으로 이동',exact:true}).click();
  const location=page.getByLabel('캐릭터 위치');await expect(location).toHaveText('작업방');
  const initial=await location.getAttribute('data-player-z');
  // Room camera finishes before the direction-relative walk begins.
  await page.waitForTimeout(750);await page.keyboard.down('w');
- await expect(page.getByRole('button',{name:'E Company Lens 열기 ↗',exact:true})).toBeVisible();
+ // Software WebGL can render only a few frames per second; keep the real
+ // movement assertion, with enough wall time for the capped simulation steps.
+ await expect(page.getByRole('button',{name:'E Company Lens 열기 ↗',exact:true})).toBeVisible({timeout:15000});
  await page.keyboard.up('w');expect(await location.getAttribute('data-player-z')).not.toBe(initial);
  await page.keyboard.press('e');await expect(page.getByRole('dialog').getByRole('heading',{name:'Company Lens',exact:true})).toBeVisible();
  const before=await location.getAttribute('data-player-x');await page.keyboard.down('d');await page.waitForTimeout(350);await page.keyboard.up('d');expect(await location.getAttribute('data-player-x')).toBe(before);

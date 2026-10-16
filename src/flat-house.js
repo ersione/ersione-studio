@@ -43,7 +43,7 @@ export function createFlatHouse(host,projects,onSelect,onHover,onStatus){
     if(now-lastReport>100){status();lastReport=now;}if(dirty){render();dirty=false;}
   }
   const visibility=()=>{stop();last=performance.now();dirty=true;};document.addEventListener('visibilitychange',visibility);status();raf=requestAnimationFrame(tick);
-  return {reset(){scale=1;center=null;dirty=true;},setRoom(id){const r=rooms.find(r=>r.id===id);if(!r)return;stop();position={x:r.spawn[0],z:r.spawn[1]};scale=w<600?1.75:1.5;center=projected(...r.target);dirty=true;status();},setDirection(x,z){pad={x,z};},setPaused(value){paused=value;if(value)stop();},setNight(value){night=value;dirty=true;},interact,
+  return {reset(){scale=1;center=null;dirty=true;},setRoom(id){const r=rooms.find(r=>r.id===id);if(!r)return;stop();position={x:r.spawn[0],z:r.spawn[1]};scale=w<600?1.75:1.5;center=projected(...r.target);dirty=true;status();},setDirection(x,z){pad={x,z};},setPaused(value){paused=value;if(value)stop();},setNight(value){canvas.dataset.lighting=value?'night':'day';night=value;dirty=true;},interact,
     dispose(){canvas.removeEventListener('wheel',wheel);canvas.removeEventListener('pointerdown',touchStart);canvas.removeEventListener('pointermove',touchMove);canvas.removeEventListener('pointerup',touchEnd);canvas.removeEventListener('pointercancel',touchEnd);cancelAnimationFrame(raf);observer.disconnect();window.removeEventListener('keydown',keydown);window.removeEventListener('keyup',keyup);window.removeEventListener('blur',stop);document.removeEventListener('visibilitychange',visibility);canvas.removeEventListener('pointerdown',start);canvas.removeEventListener('click',end);canvas.removeEventListener('pointermove',move);image.onload=null;canvas.remove();}
   };
 }

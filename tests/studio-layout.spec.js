@@ -4,7 +4,7 @@ import {games} from '../src/games.js';
 test('Louis Kim identity and personal destinations remain accessible',async({page,request})=>{
  await page.goto('/');await expect(page.locator('.intro-copy')).toContainText('Louis Kim');
  const nav=page.getByRole('navigation',{name:'Louis Kim 바로가기'});
- for(const [name,url] of [['홈페이지','https://ersione.com'],['블로그','https://blog.ersione.com'],['이력서','https://resume.ersione.com'],['GitHub','https://github.com/ersione']])await expect(nav.getByRole('link',{name:new RegExp(name)})).toHaveAttribute('href',url);
+ for(const [name,url] of [['Main','https://ersione.com/'],['Studio','https://studio.ersione.com/'],['Resume','https://resume.ersione.com/'],['Blog','https://blog.ersione.com/'],['GitHub','https://github.com/ersione']])await expect(nav.getByRole('link',{name:new RegExp(name)})).toHaveAttribute('href',url);
  const html=await (await request.get('/')).text();expect(html).toContain('name="author" content="Louis Kim"');expect(html).toContain('Louis Kim이 만드는 작은 작업실');
 });
 for(const width of [320,390,1280])test(`console layout keeps all twelve boards and controls accessible at ${width}px`,async({page})=>{

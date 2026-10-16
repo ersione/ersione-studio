@@ -1,4 +1,5 @@
 import React,{createContext,useCallback,useContext,useEffect,useRef,useState} from 'react';
+import {Button} from '@ersione/design-system/react';
 const AudioContextValue=createContext(null);
 const patterns={select:[440],start:[330,440,660],move:[220],hit:[520],score:[660,880],miss:[160,110],win:[440,550,660,880],over:[330,220,110],note:[330]};
 export function GameAudioProvider({children}){
@@ -20,7 +21,7 @@ export function GameAudioProvider({children}){
  return <AudioContextValue.Provider value={{enabled,toggle,play,stop}}>{children}</AudioContextValue.Provider>;
 }
 export const useGameSound=()=>useContext(AudioContextValue);
-export function SoundToggle(){const {enabled,toggle}=useGameSound();return <button className="game-sound" aria-pressed={enabled} onClick={toggle}>{enabled?'효과음 끄기':'효과음 켜기'}</button>;}
+export function SoundToggle(){const {enabled,toggle}=useGameSound();return <Button variant="secondary" size="sm" className="game-sound" aria-pressed={enabled} onClick={toggle}>{enabled?'효과음 끄기':'효과음 켜기'}</Button>;}
 export function useGameFeedback({score=0,lives=0,won=false,over=false,paused=false}){
  const {play,stop}=useGameSound(),previous=useRef({score,lives,won,over,paused});
  useEffect(()=>{const p=previous.current;if(paused&&!p.paused)stop();if(won&&!p.won){stop();play('win');}else if(over&&!p.over){stop();play('over');}else if(!paused){if(lives<p.lives)play('miss');else if(score>p.score)play('score');}previous.current={score,lives,won,over,paused};},[score,lives,won,over,paused,play,stop]);

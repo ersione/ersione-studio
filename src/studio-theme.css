@@ -1,0 +1,53 @@
+/* Consumer composition only; shared primitives/tokens come from the pinned package.
+   The Three.js palette and retro console/playfield artwork stay in their own CSS. */
+.app { color: var(--text); font-family: "Noto Sans KR", "DM Sans", sans-serif; }
+.app:not(.night)::before { background: radial-gradient(ellipse at 65% 35%,#faf5e9 0,var(--bg) 80%); }
+.app.night::before { background: radial-gradient(ellipse at 60% 30%,#40584b 0,var(--bg) 85%); }
+.studio-header { flex-wrap: wrap; gap: var(--space-3) var(--space-4); }
+.studio-header .wordmark { color: var(--text); margin-right: auto; }
+.lighting-controls { display: flex; align-items: center; gap: var(--space-2); order: 2; }
+.lighting-controls .eds-select { min-height: 44px; width: 88px; }
+.lighting-state { min-width: 34px; justify-content: center; }
+.common-links { order: 1; }
+.common-links .eds-navigation__link { min-height: 44px; }
+.visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
+.app :is(h1,.intro-copy strong,.intro-copy b,.collection-heading h2) { color: var(--text); }
+.app :is(.intro-copy,.collection-heading p,.house-description,.house-controls,.nearby-hint,.player-hud,footer,.studio-about,.studio-about-content p) { color: var(--muted); }
+.app :is(.intro .eyebrow,.project-descriptions h3) { color: var(--palette-teal); }
+.app .house-toolbar,.app .studio-about { border-color: var(--line); }
+.app .project { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); }
+.app .project strong { color: var(--text); }
+.app .project :is(small,.project-subtitle,.project-number) { color: var(--muted); }
+.app .game-entry { background: var(--palette-teal-subtle); }
+.app .room-nav button { min-height: 44px; color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-pill); }
+.app .room-nav button[aria-pressed="true"] { background: var(--tint); border-color: var(--accent); color: var(--accent); }
+.app .movement-pad button,.app .reset { color: var(--text); background: var(--surface); border: 1px solid var(--control-border); border-radius: var(--radius-md); }
+.app .interact { background: var(--accent); color: var(--control-check); border-radius: var(--radius-md); }
+.app dialog { background: var(--surface); color: var(--text); border-color: var(--line); border-radius: var(--radius-dialog); }
+.app dialog > h2,.app .arcade :is(.mini-game,.block-game,.memory-game)>h2 { color: var(--text); }
+.app dialog p { color: var(--muted); }
+.app dialog .dialog-subtitle { color: var(--text); }
+.app .close { min-width: 44px; min-height: 44px; padding: 0; color: var(--muted); }
+.app .action { min-height: 44px; border-radius: var(--radius-md); color: var(--control-check); background: var(--accent); }
+.app .action.secondary,.app .game-sound { min-height: 44px; color: var(--text); background: var(--surface); border: 1px solid var(--control-border); border-radius: var(--radius-md); }
+.app .game-sound[aria-pressed="true"] { background: var(--tint); border-color: var(--accent); color: var(--accent); }
+.app :is(.mini-stats,.block-sidebar) { color: var(--text); }
+.app .mini-stats { background: var(--palette-gray-subtle); border: 1px solid var(--line); border-radius: var(--radius-md); }
+.app :is(.block-sidebar small,.mini-stats span) { color: var(--muted); }
+.app :is(.block-sidebar strong,.mini-stats b) { color: var(--text); }
+.app :is(.block-controls,.mini-directions) button { color: var(--text); background: var(--surface); border: 1px solid var(--control-border); border-radius: var(--radius-md); }
+.app :is(.block-controls,.mini-directions) button:disabled { background: var(--disabled-bg); color: var(--disabled-fg); border-color: var(--line); }
+.app :is(button,a,select):focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+/* Overlay copy lives on an artistic dark playfield; keep its legible game palette. */
+.app :is(.mini-overlay,.block-overlay) .action { background: #dce7ce; color: #263f38; }
+.app .console-screen p { color: #b5c5a1; }
+.app .console-screen .eyebrow { color: #a7bd8e; }
+@media(max-width:699px) {
+ .studio-header { gap: var(--space-2); }
+ .common-links { order: 3; flex-basis: 100%; justify-content: center; }
+ .common-links .eds-navigation__link { font-size: 12px; padding: 8px; }
+ .lighting-controls { margin-left: auto; }
+ .footer-links { gap: var(--space-1) var(--space-3); }
+ .app .house-toolbar { gap: var(--space-2); }
+ .app .room-nav button { padding-inline: 10px; }
+}

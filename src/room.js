@@ -184,7 +184,7 @@ export function createRoom(host,projects,onSelect,onHover,onError,onStatus=()=>{
     setDirection(x,z){pad={x,z};},
     setPaused(value){paused=value;if(value)stop();},
     setRoom(id){homeView=false;const r=rooms.find(r=>r.id===id);if(!r)return;stop();position={x:r.spawn[0],z:r.spawn[1]};player.position.set(position.x,0,position.z);player.rotation.y=.35;view(r.target,[7,8,10]);status();dirty=true;},
-    setNight(value){night=value;hemi.intensity=night?1.1:2.6;sun.intensity=night?1.2:3.5;sun.color.set(night?'#adc3ed':'#fff0db');dirty=true;},
+    setNight(value){canvas.dataset.lighting=value?'night':'day';night=value;hemi.intensity=night?1.1:2.6;sun.intensity=night?1.2:3.5;sun.color.set(night?'#adc3ed':'#fff0db');dirty=true;},
     dispose(){disposed=true;cancelAnimationFrame(frame);observer.disconnect();controls.removeEventListener('change',invalidate);controls.dispose();window.removeEventListener('keydown',keydown);window.removeEventListener('keyup',keyup);window.removeEventListener('blur',stop);document.removeEventListener('visibilitychange',visibility);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerdown',start);canvas.removeEventListener('click',end);scene.traverse(o=>{o.geometry?.dispose();if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();});textures.forEach(t=>t.dispose());renderer.dispose();canvas.remove();}
   };
 }
