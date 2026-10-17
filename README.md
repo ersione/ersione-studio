@@ -139,6 +139,8 @@ UI는 [Ersione Design System](https://github.com/ersione/ersione-design-system) 
 
 `index.html`에 OG·Twitter Card·canonical·파비콘을 설정합니다. `scripts/prerender.mjs`는 초기 화면을 정적 HTML로 만들고 구조화 데이터·`robots.txt`·`sitemap.xml`을 생성합니다. 방과 게임은 페이지 내부 기능이므로 사이트맵에는 루트 URL만 포함합니다.
 
+파비콘은 `public/icon.png` 원본에서 만든 `public/favicon.ico`(16·32·48px), `public/favicon-96.png`(96px), `public/apple-touch-icon.png`(180px)를 사용합니다. 브랜드 아이콘을 바꾸면 세 파일도 함께 갱신합니다.
+
 집 배치나 대표 문구를 바꿨다면 Chromium 설치 후 이미지를 갱신합니다.
 
 ```sh
