@@ -67,8 +67,28 @@ for(const fallback of [false,true])test(`wheel and two-finger pinch repaint duri
  await expect.poll(async()=>(await canvas.screenshot()).equals(pinchDuring)).toBe(false);
  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
 });
-test('Studio declares the shared Ersione favicon',async({request})=>{
- const html=await (await request.get('/')).text();expect(html).toContain('rel="icon" href="/icon.png"');
- const icon=await request.get('/icon.png');expect(icon.status()).toBe(200);
- const png=await icon.body();expect(png.readUInt32BE(16)).toBe(576);expect(png.readUInt32BE(20)).toBe(576);
+test('Studio serves compatible shared Ersione favicon sizes',async({request})=>{
+ const html=await (await request.get('/')).text();
+ const links=html.match(/<link rel="(?:icon|apple-touch-icon)"[^>]*>/g)||[];
+ expect(links).toHaveLength(3);
+ expect(html).toContain('rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" type="image/x-icon"');
+ expect(html).toContain('rel="icon" href="/favicon-96.png" sizes="96x96" type="image/png"');
+ expect(html).toContain('rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180"');
+ const ico=await request.get('/favicon.ico');expect(ico.status()).toBe(200);
+ expect(ico.headers()['content-type']).toMatch(/image\/(?:x-icon|vnd.microsoft.icon)/);
+ const bytes=await ico.body();expect(bytes.readUInt16LE(0)).toBe(0);expect(bytes.readUInt16LE(2)).toBe(1);expect(bytes.readUInt16LE(4)).toBe(3);
+ const sizes=[];
+ for(let i=0;i<3;i++){
+  const entry=6+i*16,width=bytes[entry]||256,height=bytes[entry+1]||256;
+  sizes.push([width,height]);
+  const length=bytes.readUInt32LE(entry+8),offset=bytes.readUInt32LE(entry+12);
+  expect(offset).toBeGreaterThanOrEqual(54);expect(offset+length).toBeLessThanOrEqual(bytes.length);
+  // ICO DIB height includes the bitmap and its transparency mask.
+  expect(bytes.readUInt32LE(offset)).toBe(40);expect(bytes.readInt32LE(offset+4)).toBe(width);expect(bytes.readInt32LE(offset+8)).toBe(height*2);
+ }
+ expect(sizes.sort((a,b)=>a[0]-b[0])).toEqual([[16,16],[32,32],[48,48]]);
+ for(const [path,size] of [['/favicon-96.png',96],['/apple-touch-icon.png',180],['/icon.png',576]]){
+  const icon=await request.get(path);expect(icon.status()).toBe(200);expect(icon.headers()['content-type']).toContain('image/png');
+  const png=await icon.body();expect(png.subarray(0,8).toString('hex')).toBe('89504e470d0a1a0a');expect(png.readUInt32BE(16)).toBe(size);expect(png.readUInt32BE(20)).toBe(size);
+ }
 });
