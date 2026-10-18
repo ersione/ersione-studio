@@ -9,7 +9,7 @@ test('initial HTML exposes portfolio, links and truthful structured data',async(
  expect(html).toContain('content="index,follow,max-image-preview:large"');
  const schema=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
  const person=schema['@graph'].find(item=>item['@type']==='Person');expect(person.name).toBe('Louis Kim');expect(person.sameAs).toContain('https://github.com/ersione');
- const webPage=schema['@graph'].find(item=>item['@type']==='WebPage');expect(webPage.about['@id']).toBe(person['@id']);expect(webPage.url).toBe('https://studio.ersione.com/');expect(webPage.primaryImageOfPage.url).toBe('https://studio.ersione.com/og-house-v3.png');
+ const webPage=schema['@graph'].find(item=>item['@type']==='WebPage');expect(webPage.about['@id']).toBe(person['@id']);expect(webPage.url).toBe('https://studio.ersione.com/');expect(webPage.primaryImageOfPage.url).toBe('https://studio.ersione.com/og-image.png');
 });
 test('portfolio stays readable without JavaScript',async({browser})=>{
  const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});const page=await context.newPage();

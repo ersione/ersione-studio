@@ -147,7 +147,7 @@ UI는 [Ersione Design System](https://github.com/ersione/ersione-design-system) 
 npm run update:images
 ```
 
-실제 3D 집에서 `public/room-preview.png`·`public/house-base.png`와 1200×630 공유 이미지 `public/og-house-v3.png`를 생성합니다. 이미지 생성 후 결과를 확인하세요. 메신저의 기존 미리보기 캐시 반영에는 시간이 걸릴 수 있습니다.
+실제 3D 집에서 `public/room-preview.png`·`public/house-base.png`와 1200×630 공유 이미지 `public/og-image.png`를 생성합니다. 이미지 생성 후 결과를 확인하세요. 메신저의 기존 미리보기 캐시 반영에는 시간이 걸릴 수 있습니다.
 
 ## 배포
 
